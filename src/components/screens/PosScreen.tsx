@@ -17,6 +17,8 @@ interface PosScreenProps {
     cashTendered: number;
     sendSms: boolean;
   }) => void;
+  isLocked?: boolean;
+  onOpenSubscriptionModal?: () => void;
 }
 
 export const PosScreen: React.FC<PosScreenProps> = ({
@@ -28,6 +30,8 @@ export const PosScreen: React.FC<PosScreenProps> = ({
   onClearCart,
   farmers,
   onCompleteSale,
+  isLocked = false,
+  onOpenSubscriptionModal,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -360,12 +364,37 @@ export const PosScreen: React.FC<PosScreenProps> = ({
               <span className="font-mono">KES {subtotal.toLocaleString()}</span>
             </div>
 
-            <button
-              onClick={handleComplete}
-              className="w-full py-3 bg-[#003b1b] text-[#b1f2be] font-bold text-xs rounded-xl shadow-md"
-            >
-              Complete Sale & Print 80mm Receipt
-            </button>
+            {isLocked ? (
+              <div className="space-y-2 pt-1">
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-950 text-xs">
+                  <div className="font-bold flex items-center gap-1 text-red-900">
+                    <span className="material-symbols-outlined text-sm">lock</span>
+                    <span>Store Operating License Expired (Locked)</span>
+                  </div>
+                  <p className="mt-1">
+                    Your store subscription has expired. Please top up your daily license fee to unlock the POS checkout counter.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCheckoutModal(false);
+                    if (onOpenSubscriptionModal) onOpenSubscriptionModal();
+                  }}
+                  className="w-full py-3 bg-[#003b1b] text-[#b1f2be] font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer hover:bg-[#14532d]"
+                >
+                  <span className="material-symbols-outlined text-base">payments</span>
+                  <span>Top Up License via M-Pesa</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleComplete}
+                className="w-full py-3 bg-[#003b1b] text-[#b1f2be] font-bold text-xs rounded-xl shadow-md cursor-pointer hover:bg-[#14532d]"
+              >
+                Complete Sale & Print 80mm Receipt
+              </button>
+            )}
           </div>
         </div>
       )}

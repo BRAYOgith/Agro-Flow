@@ -148,6 +148,41 @@ const MIGRATIONS: Migration[] = [
       execute(`INSERT OR REPLACE INTO system_info (key, value) VALUES ('last_migration_date', datetime('now'));`);
     },
   },
+  {
+    version: '1.3.0',
+    name: 'saas_billing_and_tenant_security',
+    up: () => {
+      execScript(`
+        CREATE TABLE IF NOT EXISTS store_subscription (
+          store_id TEXT PRIMARY KEY,
+          store_name TEXT NOT NULL,
+          owner_phone TEXT NOT NULL,
+          daily_rate INTEGER DEFAULT 100,
+          wallet_balance REAL DEFAULT 0,
+          licensed_until TEXT NOT NULL,
+          subscription_status TEXT DEFAULT 'active',
+          daraja_type TEXT DEFAULT 'BuyGoods',
+          daraja_shortcode TEXT,
+          daraja_consumer_key_encrypted TEXT,
+          daraja_consumer_secret_encrypted TEXT,
+          daraja_passkey_encrypted TEXT,
+          daraja_active INTEGER DEFAULT 0,
+          updated_at TEXT DEFAULT (datetime('now'))
+        );
+
+        CREATE TABLE IF NOT EXISTS saas_payment_logs (
+          id TEXT PRIMARY KEY,
+          store_id TEXT NOT NULL,
+          mpesa_receipt TEXT UNIQUE NOT NULL,
+          amount REAL NOT NULL,
+          phone TEXT NOT NULL,
+          days_added INTEGER NOT NULL,
+          processed_at TEXT DEFAULT (datetime('now'))
+        );
+      `);
+      execute(`INSERT OR REPLACE INTO system_info (key, value) VALUES ('version', '1.3.0');`);
+    },
+  },
 ];
 
 export function runMigrations(): { applied: string[]; total: number } {

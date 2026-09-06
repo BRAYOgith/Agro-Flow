@@ -15,6 +15,8 @@ import { SuppliersScreen } from '@/src/components/screens/SuppliersScreen';
 import { PlatformUpdateModal } from '@/src/components/PlatformUpdateModal';
 import { LoginModal } from '@/src/components/LoginModal';
 import { LandingLoginPage } from '@/src/components/LandingLoginPage';
+import { SubscriptionModal } from '@/src/components/SubscriptionModal';
+import { DarajaSettingsModal } from '@/src/components/DarajaSettingsModal';
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('dashboard');
@@ -32,6 +34,11 @@ export default function Home() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPlatformUpdateModal, setShowPlatformUpdateModal] = useState(false);
 
+  // SaaS Subscription & Tenant Daraja Modal states
+  const [subscription, setSubscription] = useState<any>(null);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [showDarajaModal, setShowDarajaModal] = useState(false);
+
   const showToast = (title: string, desc: string, type: 'success' | 'info' = 'success') => {
     setToastMessage({ title, desc, type });
     setTimeout(() => setToastMessage(null), 4500);
@@ -40,12 +47,13 @@ export default function Home() {
   // Load live data from SQLite API endpoints
   const loadData = useCallback(async () => {
     try {
-      const [prodsData, farmersData, txData, denData, inwData] = await Promise.all([
+      const [prodsData, farmersData, txData, denData, inwData, subData] = await Promise.all([
         api.getProducts(undefined, searchQuery),
         api.getFarmers(undefined, undefined, searchQuery),
         api.getTransactions(),
         api.getDenominations(),
         api.getInwardLines(),
+        api.getSubscription().catch(() => null),
       ]);
 
       setProducts(prodsData);
@@ -53,6 +61,7 @@ export default function Home() {
       setTransactions(txData);
       setDenominations(denData);
       setInwardLines(inwData);
+      if (subData) setSubscription(subData);
 
       // Seed initial active cart item if empty
       if (prodsData.length >= 3 && cart.length === 0) {
@@ -327,6 +336,8 @@ export default function Home() {
           setShowLoginModal(true);
         }}
         onOpenPlatformUpdate={() => setShowPlatformUpdateModal(true)}
+        onOpenSubscriptionModal={() => setShowSubscriptionModal(true)}
+        onOpenDarajaModal={() => setShowDarajaModal(true)}
       />
 
       {/* Main Content Area */}
@@ -337,6 +348,8 @@ export default function Home() {
           onNavigate={setCurrentScreen}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          subscription={subscription}
+          onOpenSubscriptionModal={() => setShowSubscriptionModal(true)}
         />
 
         {/* Screen Container */}
@@ -362,6 +375,8 @@ export default function Home() {
               onClearCart={handleClearCart}
               farmers={farmers}
               onCompleteSale={handleCompleteSale}
+              isLocked={subscription?.subscriptionStatus === 'locked'}
+              onOpenSubscriptionModal={() => setShowSubscriptionModal(true)}
             />
           )}
 
@@ -449,6 +464,26 @@ export default function Home() {
       <PlatformUpdateModal
         isOpen={showPlatformUpdateModal}
         onClose={() => setShowPlatformUpdateModal(false)}
+      />
+
+      {/* SaaS Subscription & License Renewal Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        subscription={subscription}
+        onRefresh={() => {
+          loadData();
+          showToast('License Updated', 'Store operating license refreshed successfully.');
+        }}
+      />
+
+      {/* Tenant Daraja Direct POS Setup Modal */}
+      <DarajaSettingsModal
+        isOpen={showDarajaModal}
+        onClose={() => setShowDarajaModal(false)}
+        onSettingsSaved={() => {
+          showToast('Daraja Configured', 'Store Till credentials encrypted with AES-256-GCM.');
+        }}
       />
     </div>
   );

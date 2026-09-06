@@ -7,6 +7,12 @@ interface HeaderProps {
   onOpenSearch?: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
+  subscription?: {
+    daysRemaining: number;
+    subscriptionStatus: 'active' | 'grace_period' | 'locked';
+    dailyRate: number;
+  } | null;
+  onOpenSubscriptionModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,6 +20,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   searchQuery,
   onSearchChange,
+  subscription,
+  onOpenSubscriptionModal,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [weatherData, setWeatherData] = useState<{
@@ -129,8 +137,38 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* User Controls */}
+      {/* User & Subscription Controls */}
       <div className="flex items-center gap-3">
+        {subscription && (
+          <button
+            onClick={onOpenSubscriptionModal}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer shadow-xs ${
+              subscription.subscriptionStatus === 'locked'
+                ? 'bg-red-50 text-red-900 border-red-300 hover:bg-red-100'
+                : subscription.subscriptionStatus === 'grace_period'
+                ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100'
+                : 'bg-emerald-50 text-emerald-950 border-emerald-300 hover:bg-emerald-100'
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                subscription.subscriptionStatus === 'locked'
+                  ? 'bg-red-600'
+                  : subscription.subscriptionStatus === 'grace_period'
+                  ? 'bg-amber-500 animate-pulse'
+                  : 'bg-emerald-500'
+              }`}
+            ></span>
+            <span>
+              {subscription.subscriptionStatus === 'locked'
+                ? 'License Locked'
+                : subscription.subscriptionStatus === 'grace_period'
+                ? 'Grace Period (24h)'
+                : `${subscription.daysRemaining}d Active`}
+            </span>
+          </button>
+        )}
+
         <button
           onClick={() => setShowNotifications(!showNotifications)}
           className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-600 hover:bg-[#eaedff] hover:text-[#003b1b] transition-colors"

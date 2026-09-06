@@ -227,6 +227,107 @@ class ApiService {
     });
     return this.handleResponse<any>(res, 'Failed to delete user');
   }
+
+  // --- SaaS Subscription & Micro-Billing (Dynamic Rate) ---
+  async getSubscription(storeId = 'store-01') {
+    const headers = await this.ensureHeaders();
+    const res = await fetch(`/api/saas/subscription?storeId=${storeId}`, { headers });
+    return this.handleResponse<{
+      storeId: string;
+      storeName: string;
+      ownerPhone: string;
+      dailyRate: number;
+      walletBalance: number;
+      licensedUntil: string;
+      daysRemaining: number;
+      subscriptionStatus: 'active' | 'grace_period' | 'locked';
+      darajaConfigured: boolean;
+      darajaShortcode: string;
+      darajaType: string;
+      packages: {
+        oneDay: { days: number; amount: number; label: string };
+        oneWeek: { days: number; amount: number; label: string };
+        oneMonth: { days: number; amount: number; label: string; savingsPercent?: number };
+      };
+    }>(res, 'Failed to fetch subscription status');
+  }
+
+  async updateSubscriptionRate(dailyRate: number, pin: string, storeId = 'store-01') {
+    const headers = await this.ensureHeaders();
+    const res = await fetch('/api/saas/subscription', {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ storeId, dailyRate, pin }),
+    });
+    return this.handleResponse<{ success: boolean; message: string }>(res, 'Failed to update daily rate');
+  }
+
+  async topupSubscription(amount: number, phone: string, simulateInstantSuccess = false, storeId = 'store-01') {
+    const headers = await this.ensureHeaders();
+    const res = await fetch('/api/saas/topup', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ storeId, amount, phone, simulateInstantSuccess }),
+    });
+    return this.handleResponse<{
+      success: boolean;
+      instantSettled?: boolean;
+      checkoutRequestId: string;
+      daysAdded?: number;
+      message: string;
+    }>(res, 'Failed to initiate SaaS recharge');
+  }
+
+  // --- Tenant Daraja API Credentials ---
+  async getDarajaSettings(storeId = 'store-01') {
+    const headers = await this.ensureHeaders();
+    const res = await fetch(`/api/settings/daraja?storeId=${storeId}`, { headers });
+    return this.handleResponse<{
+      darajaType: 'BuyGoods' | 'Paybill';
+      shortcode: string;
+      consumerKeyMasked: string;
+      consumerSecretMasked: string;
+      passkeyMasked: string;
+      hasConsumerKey: boolean;
+      hasConsumerSecret: boolean;
+      hasPasskey: boolean;
+      isConfigured: boolean;
+    }>(res, 'Failed to fetch Daraja settings');
+  }
+
+  async saveDarajaSettings(data: {
+    shortcode: string;
+    darajaType: 'BuyGoods' | 'Paybill';
+    consumerKey?: string;
+    consumerSecret?: string;
+    passkey?: string;
+    pin: string;
+    storeId?: string;
+  }) {
+    const headers = await this.ensureHeaders();
+    const res = await fetch('/api/settings/daraja', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data),
+    });
+    return this.handleResponse<{ success: boolean; message: string; shortcode: string }>(
+      res,
+      'Failed to save Daraja settings'
+    );
+  }
+
+  async testDarajaSettings(shortcode?: string, storeId = 'store-01') {
+    const headers = await this.ensureHeaders();
+    const res = await fetch('/api/settings/daraja/test', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ storeId, shortcode }),
+    });
+    return this.handleResponse<{ success: boolean; mode: string; message: string }>(
+      res,
+      'Failed to test Daraja credentials'
+    );
+  }
 }
 
 export const api = new ApiService();

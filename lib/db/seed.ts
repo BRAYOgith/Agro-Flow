@@ -37,4 +37,29 @@ export async function seedInitialData() {
       );
     }
   }
+
+  // Seed default store subscription if not exists
+  const storeCount = queryOne<{ count: number }>('SELECT COUNT(*) as count FROM store_subscription;')?.count || 0;
+  if (storeCount === 0) {
+    const configuredRate = Number(process.env.SAAS_DAILY_RATE) || 100;
+    const fourteenDaysAhead = new Date(Date.now() + 14 * 86400000).toISOString();
+    execute(
+      `INSERT INTO store_subscription (
+        store_id, store_name, owner_phone, daily_rate, wallet_balance, licensed_until, subscription_status, daraja_type, daraja_shortcode, daraja_active
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      [
+        'store-01',
+        'Kerugoya Central Hub',
+        '+254712345678',
+        configuredRate,
+        500,
+        fourteenDaysAhead,
+        'active',
+        'BuyGoods',
+        '592019',
+        1,
+      ]
+    );
+  }
 }
+

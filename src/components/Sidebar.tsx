@@ -11,6 +11,8 @@ interface SidebarProps {
   pendingGrnCount?: number;
   onSignOut?: () => void;
   onOpenPlatformUpdate?: () => void;
+  onOpenSubscriptionModal?: () => void;
+  onOpenDarajaModal?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -23,6 +25,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   pendingGrnCount = 0,
   onSignOut,
   onOpenPlatformUpdate,
+  onOpenSubscriptionModal,
+  onOpenDarajaModal,
 }) => {
   const formattedReceivables =
     totalReceivables >= 1000
@@ -174,7 +178,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </nav>
 
       {/* Footer Controls & Sign Out */}
-      <div className="p-3 bg-[#002b13] border-t border-[#14532d] space-y-2">
+      <div className="p-3 bg-[#002b13] border-t border-[#14532d] space-y-1.5">
+        {onOpenSubscriptionModal && (
+          <button
+            onClick={onOpenSubscriptionModal}
+            className="w-full px-3 py-1.5 bg-[#14532d] hover:bg-[#1b6b3b] text-[#b1f2be] rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/30 transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-sm">verified</span>
+            <span>SaaS License &amp; Renewal</span>
+          </button>
+        )}
+
+        {onOpenDarajaModal && (
+          <button
+            onClick={onOpenDarajaModal}
+            className="w-full px-3 py-1.5 bg-white/5 hover:bg-white/10 text-[#87c695] hover:text-white rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/20 transition-colors cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-sm">phone_android</span>
+            <span>M-Pesa Till Setup</span>
+          </button>
+        )}
+
         <a
           href="/legal"
           target="_blank"
@@ -188,9 +212,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {onOpenPlatformUpdate && (
           <button
             onClick={onOpenPlatformUpdate}
-            className="w-full px-3 py-2 bg-[#14532d] hover:bg-[#1b6b3b] text-[#b1f2be] rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/20 transition-colors"
+            className="w-full px-3 py-1.5 bg-white/5 hover:bg-white/10 text-[#87c695] hover:text-white rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/20 transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-base">system_update</span>
+            <span className="material-symbols-outlined text-sm">system_update</span>
             <span>Platform Cockpit</span>
           </button>
         )}
@@ -198,9 +222,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {onSignOut && (
           <button
             onClick={onSignOut}
-            className="w-full px-3 py-2 bg-red-950/60 hover:bg-red-900 text-red-200 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-red-800/30 transition-colors"
+            className="w-full px-3 py-1.5 bg-red-950/60 hover:bg-red-900 text-red-200 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-red-800/30 transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-base">logout</span>
+            <span className="material-symbols-outlined text-sm">logout</span>
             <span>Sign Out</span>
           </button>
         )}
