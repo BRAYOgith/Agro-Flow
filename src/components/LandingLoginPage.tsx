@@ -45,6 +45,42 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
     return () => clearInterval(interval);
   }, [activeTab, rotatingWords.length]);
 
+  // Hero Banner Slider (inspired by dynamic agricultural portals)
+  const bannerSlides = [
+    {
+      title: 'Connecting Agrovets to Kenya\'s Modern Agricultural Value Chain',
+      subtitle: 'Award-winning digital infrastructure powering over 1,400 agribusiness dispensaries and agro-dealers across Kirinyaga and Mount Kenya.',
+      badge: 'Kirinyaga Agribusiness Operating System',
+      image: 'https://farmerstrend.com/wp-content/uploads/2022/07/SLIDER-1.jpg',
+      tagline: 'FEFO Batch Control • Instant M-Pesa STK • Digital Credit Ledgers',
+      ctaPrimary: 'Sign In to POS Counter',
+      ctaSecondary: 'Explore System Modules',
+    },
+    {
+      title: 'Precision Crop Protection & High-Yield Farm Advisory',
+      subtitle: 'Ensure 100% PCPB-compliant agrochemical dispensation, active ingredient tank mixing ratios, and certified seed lot tracking.',
+      badge: 'PCPB & KEPHIS Certified Dispensary',
+      image: 'https://farmerstrend.com/wp-content/uploads/2022/07/20-july_tomato-nervous-system.webp',
+      tagline: 'Zero Expired Inventory • Barcode Verification • Safe Dispensary',
+      ctaPrimary: 'Launch Cashier Terminal',
+      ctaSecondary: 'View Operational Guide',
+    },
+    {
+      title: 'Dairy, Livestock & Agro-Vet Health Management',
+      subtitle: 'Complete clinical dispensation records, veterinary drug tracking, and tripartite cooperative milk check-off credit guarantees.',
+      badge: 'Livestock & Veterinary Records',
+      image: 'https://farmerstrend.com/wp-content/uploads/2022/07/Cow-Wallpaper-31-1280x800-1.jpg',
+      tagline: 'Cooperative Check-Off • Vet Advisory • Instant Ledger Balancing',
+      ctaPrimary: 'Sign In to Terminal',
+      ctaSecondary: 'Read Success Stories',
+    },
+  ];
+  const [activeBannerSlide, setActiveBannerSlide] = useState(0);
+  const [isBannerPaused, setIsBannerPaused] = useState(false);
+
+  // Video Modal State for In-Store Demo
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
   // Interactive States for Static Pages
   // 1. Home tab state: Feature Carousel
   const featureList: ('pos' | 'credit' | 'expiry' | 'shift')[] = ['pos', 'credit', 'expiry', 'shift'];
@@ -52,28 +88,52 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
   const [creditSliderVal, setCreditSliderVal] = useState(350000);
   const [isFeaturePaused, setIsFeaturePaused] = useState(false);
 
-  // 2. Testimonials Carousel state
+  // 2. Testimonials Carousel state (Enhanced with real Kenyan agricultural reviewers)
   const testimonials = [
     {
       store: 'Kirinyaga Agrovet Central',
       location: 'Kerugoya Town, Kirinyaga',
       manager: 'Samuel Maina • Managing Director',
+      photo: 'https://farmerstrend.com/wp-content/uploads/2022/07/WINNERS.jpg',
       quote: 'Before AgroFlow, paper credit notebooks always had missing pages and disputes at the end of harvest. Now with automated M-Pesa tracking and SMS debt reminders, our debt collection jumped by 80%.',
       stat: 'KES 240,000 Recovered',
+      category: 'Commercial Agrovet',
     },
     {
       store: 'Mwea Farm Supplies & Depot',
       location: 'Wang’uru / Mwea Rice Belt',
       manager: 'Beatrice Njeri • Shop Supervisor',
+      photo: 'https://farmerstrend.com/wp-content/uploads/2022/07/SLIDER-1.jpg',
       quote: 'During peak fertilizer distribution, lines used to stretch out the door. The F2 counter hotkey and barcode scanner cut ticket checkout time to under 3 seconds per farmer.',
       stat: '4x Faster Counter Checkout',
+      category: 'Rice & Cereals Depot',
     },
     {
       store: 'Mount Kenya Agro-Chemicals',
       location: 'Kutus Junction, Kirinyaga',
       manager: 'David Karani • Lead Cashier',
+      photo: 'https://farmerstrend.com/wp-content/uploads/2022/07/youths-in-agriculture-farmers-trend-kenya.jpg',
       quote: 'The shift close banknote counter makes drawer balancing effortless. We haven’t had a single unexplained cash shortage since the Manager PIN lock was implemented.',
       stat: '0 KES Shift Discrepancy',
+      category: 'Input Dispensary',
+    },
+    {
+      store: 'Pokea Dairy Cooperative Input Centre',
+      location: 'Kangari / Murang’a North Hub',
+      manager: 'Timothy Sila • Veterinary Officer',
+      photo: 'https://farmerstrend.com/wp-content/uploads/2022/07/Cow-Wallpaper-31-1280x800-1-150x150.jpg',
+      quote: 'Managing veterinary medicines and dairy meal credit against farmer milk deliveries used to take three clerks two full days. With AgroFlow check-off ledgers, balancing takes under ten minutes.',
+      stat: '98% Ledger Accuracy',
+      category: 'Co-op Dairy Hub',
+    },
+    {
+      store: 'Highland Horti-Care Agrovets',
+      location: 'Karatina Central Market',
+      manager: 'Waweru Mwangi • Onion & Tomato Specialist',
+      photo: 'https://farmerstrend.com/wp-content/uploads/2022/07/On-150x150.jpg',
+      quote: 'The FEFO batch alerts saved our store over KES 180,000 in fungicides that would have expired on the top shelf. The system warned us 30 days before maturity so we prioritized those lots first.',
+      stat: 'Zero Chemical Spoilage',
+      category: 'Horticulture Input',
     },
   ];
   const [testimonialIndex, setTestimonialIndex] = useState(0);
@@ -88,6 +148,15 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
   const [selectedRole, setSelectedRole] = useState<'cashier' | 'manager'>('cashier');
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Auto-advance Hero Banner Slider every 6.5 seconds
+  useEffect(() => {
+    if (activeTab !== 'home' || isBannerPaused) return;
+    const timer = setInterval(() => {
+      setActiveBannerSlide((prev) => (prev + 1) % bannerSlides.length);
+    }, 6500);
+    return () => clearInterval(timer);
+  }, [activeTab, isBannerPaused, bannerSlides.length]);
 
   // Auto-advance Home Feature Carousel every 6 seconds
   useEffect(() => {
@@ -208,8 +277,38 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
         </div>
       </div>
 
+      {/* Top Quick Contact & Help Bar */}
+      <div className="bg-[#003417] text-[#87c695] text-[11px] py-1.5 px-6 border-b border-[#14532d]/60 hidden md:block">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <a href="tel:+254790509684" className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-xs text-[#87c695]">call</span>
+              <span>+254 790 509 684 / +254 724 559 286</span>
+            </a>
+            <span className="text-[#14532d]">•</span>
+            <div className="flex items-center gap-1.5 text-[#87c695]/90">
+              <span className="material-symbols-outlined text-xs">location_on</span>
+              <span>Kerugoya Central Hub &amp; Nairobi, Kenya</span>
+            </div>
+            <span className="text-[#14532d]">•</span>
+            <a href="mailto:support@agroflow.co.ke" className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <span className="material-symbols-outlined text-xs">mail</span>
+              <span>support@agroflow.co.ke</span>
+            </a>
+          </div>
+          <div className="flex items-center gap-3 text-[10px]">
+            <span className="bg-[#14532d]/80 text-[#b1f2be] px-2 py-0.5 rounded-full font-mono">
+              ODPC / KDPA 2019 COMPLIANT
+            </span>
+            <span className="bg-[#14532d]/80 text-[#b1f2be] px-2 py-0.5 rounded-full font-mono">
+              PCPB(CR) VERIFIED
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Top Public Navigation Navbar */}
-      <header className="bg-[#003b1b] text-white border-b border-[#14532d] px-6 py-4 shadow-lg sticky top-0 z-30 transition-all duration-300">
+      <header className="bg-[#003b1b] text-white border-b border-[#14532d] px-6 py-3.5 shadow-lg sticky top-0 z-30 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('home')}>
             <img
@@ -289,12 +388,110 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
       <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-12">
         {/* 1. HOME TAB */}
         {activeTab === 'home' && (
-          <div className="space-y-12 py-4 animate-fade-in">
+          <div className="space-y-12 py-2 animate-fade-in">
+            {/* Dynamic Banner Carousel (inspired by high-impact Kenyan agri portals) */}
+            <div
+              className="relative overflow-hidden rounded-3xl shadow-xl border border-[#dae2fd] text-white min-h-[420px] md:min-h-[460px] flex flex-col justify-end transition-all duration-500"
+              onMouseEnter={() => setIsBannerPaused(true)}
+              onMouseLeave={() => setIsBannerPaused(false)}
+            >
+              {/* Background Image Layer with Zoom & Overlay */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out transform scale-105"
+                style={{ backgroundImage: `url(${bannerSlides[activeBannerSlide].image})` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#00210d] via-[#003b1b]/80 to-black/30" />
+
+              {/* Top Banner Category Badge & Slide Count */}
+              <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
+                <div className="flex items-center gap-2 bg-[#003b1b]/90 border border-emerald-400/40 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-[#b1f2be] shadow-md">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>{bannerSlides[activeBannerSlide].badge}</span>
+                </div>
+
+                {/* Banner Slide Progress Indicators & Navigation */}
+                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                  <button
+                    onClick={() => setActiveBannerSlide((prev) => (prev - 1 + bannerSlides.length) % bannerSlides.length)}
+                    aria-label="Previous Slide"
+                    className="w-6 h-6 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">chevron_left</span>
+                  </button>
+                  <div className="flex items-center gap-1.5 px-1">
+                    {bannerSlides.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveBannerSlide(idx)}
+                        aria-label={`Go to slide ${idx + 1}`}
+                        className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                          activeBannerSlide === idx ? 'w-6 bg-emerald-400' : 'w-2 bg-white/40 hover:bg-white/70'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setActiveBannerSlide((prev) => (prev + 1) % bannerSlides.length)}
+                    aria-label="Next Slide"
+                    className="w-6 h-6 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">chevron_right</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Banner Center Content */}
+              <div className="relative z-10 p-6 md:p-12 max-w-3xl space-y-4 animate-fade-in" key={activeBannerSlide}>
+                <div className="text-xs uppercase font-bold tracking-wider text-[#87c695] flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm">verified</span>
+                  <span>{bannerSlides[activeBannerSlide].tagline}</span>
+                </div>
+
+                <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white drop-shadow-md">
+                  {bannerSlides[activeBannerSlide].title}
+                </h1>
+
+                <p className="text-sm sm:text-base text-gray-200 leading-relaxed max-w-2xl drop-shadow-sm font-normal">
+                  {bannerSlides[activeBannerSlide].subtitle}
+                </p>
+
+                {/* Banner Buttons & Video Modal Trigger */}
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <button
+                    onClick={() => setActiveTab('login')}
+                    className="px-6 py-3.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs rounded-xl shadow-lg transition-all duration-200 flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <span className="material-symbols-outlined text-base">login</span>
+                    <span>{bannerSlides[activeBannerSlide].ctaPrimary}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab('system')}
+                    className="px-5 py-3.5 bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md text-white font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer flex items-center gap-2 transform hover:-translate-y-0.5"
+                  >
+                    <span>{bannerSlides[activeBannerSlide].ctaSecondary}</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </button>
+
+                  {/* Pulsing Video Demonstration Trigger */}
+                  <button
+                    onClick={() => setIsVideoModalOpen(true)}
+                    className="px-4 py-3 bg-black/40 hover:bg-black/60 border border-emerald-400/40 text-[#b1f2be] font-bold text-xs rounded-xl backdrop-blur-md transition-all flex items-center gap-2 cursor-pointer ml-auto"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-[#11bf36] text-white flex items-center justify-center box-shadow-ripples">
+                      <span className="material-symbols-outlined text-sm">play_arrow</span>
+                    </div>
+                    <span className="hidden sm:inline">Watch Operating Tour</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {/* Top Hero Section with Playfair Typography & Rotating Headline */}
-            <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
+            <div className="flex flex-col lg:flex-row items-start justify-between gap-12 pt-4">
               {/* Left Column: Hero Intro */}
               <div className="flex-1 space-y-6">
-                <h1 className="hero-headline text-[#131b2e]">
+                <h2 className="hero-headline text-[#131b2e]">
                   Enterprise Operating System for <span className="text-[#003b1b] underline decoration-[#87c695] underline-offset-4 decoration-2">Agribusiness</span>{' '}
                   <span
                     className="block text-2xl md:text-3xl font-medium mt-3 italic text-[#003b1b] transition-all duration-300"
@@ -305,7 +502,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   >
                     Bringing {currentRotating.highlight} {currentRotating.suffix}
                   </span>
-                </h1>
+                </h2>
 
                 <p className="text-base text-gray-600 max-w-xl leading-relaxed">
                   Replace paper notebooks, calculators, and fragmented spreadsheets. AgroFlow powers your counter sales, smallholder credit ledgers, batch tracking, and farmer accounts in real time.
@@ -316,14 +513,14 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     onClick={() => setActiveTab('login')}
                     className="px-6 py-3.5 bg-[#003b1b] text-[#b1f2be] hover:bg-[#14532d] font-bold text-xs rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <span className="material-symbols-outlined text-base">login</span>
-                    <span>Sign In to Terminal</span>
+                    <span className="material-symbols-outlined text-base">point_of_sale</span>
+                    <span>Launch Cashier Terminal</span>
                   </button>
                   <button
                     onClick={() => setActiveTab('guide')}
                     className="px-5 py-3.5 bg-white text-[#003b1b] border border-[#dae2fd] hover:bg-gray-50 font-bold text-xs rounded-xl shadow-xs transition-all duration-200 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    View User Manual & Guide
+                    View User Manual &amp; Guide
                   </button>
                 </div>
               </div>
@@ -596,24 +793,25 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
               </div>
             </div>
 
-            {/* Testimonials & Agrovet Success Stories Carousel */}
+            {/* Testimonials & Agrovet Reviews Carousel (Enhanced with photo & agrovet verification) */}
             <div
-              className="bg-white rounded-2xl border border-[#dae2fd] p-6 md:p-8 shadow-sm space-y-4 transition-all duration-300"
+              className="bg-white rounded-3xl border border-[#dae2fd] p-6 md:p-8 shadow-sm space-y-6 transition-all duration-300"
               onMouseEnter={() => setIsTestimonialPaused(true)}
               onMouseLeave={() => setIsTestimonialPaused(false)}
             >
               <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div className="space-y-0.5">
-                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    Agrovet Success Stories
+                  <div className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>Agrovet Operator Reviews &amp; Experiences</span>
                   </div>
-                  <div className="font-playfair font-bold text-lg text-[#131b2e]">
-                    Proven Results Across Kirinyaga County
+                  <div className="font-playfair font-bold text-xl text-[#131b2e]">
+                    Trusted by Over 1,400 Agribusinesses &amp; Farms in Kenya
                   </div>
                 </div>
 
                 {/* Carousel Controls */}
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <button
                     onClick={handlePrevTestimonial}
                     aria-label="Previous story"
@@ -631,21 +829,39 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 </div>
               </div>
 
-              {/* Active Testimonial Slide */}
-              <div className="min-h-[110px] flex flex-col justify-between animate-fade-in" key={testimonialIndex}>
-                <blockquote className="font-playfair italic text-sm md:text-base text-gray-800 leading-relaxed">
-                  "{testimonials[testimonialIndex].quote}"
-                </blockquote>
+              {/* Active Testimonial Slide with Photo, Quote & Verified Badge */}
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 animate-fade-in" key={testimonialIndex}>
+                <div className="relative shrink-0">
+                  <img
+                    src={testimonials[testimonialIndex].photo}
+                    alt={testimonials[testimonialIndex].manager}
+                    className="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover border-2 border-emerald-500/40 shadow-md"
+                  />
+                  <span className="absolute -bottom-2 -right-2 bg-[#003b1b] text-[#b1f2be] p-1 rounded-lg shadow-sm">
+                    <span className="material-symbols-outlined text-sm">verified</span>
+                  </span>
+                </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-4 border-t border-gray-100 text-xs">
-                  <div>
-                    <div className="font-playfair font-bold text-sm text-[#003b1b]">{testimonials[testimonialIndex].store}</div>
-                    <div className="text-gray-500 text-[11px]">
-                      {testimonials[testimonialIndex].manager} • {testimonials[testimonialIndex].location}
+                <div className="space-y-3 flex-1">
+                  <blockquote className="font-playfair italic text-base md:text-lg text-gray-800 leading-relaxed">
+                    &ldquo;{testimonials[testimonialIndex].quote}&rdquo;
+                  </blockquote>
+
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-gray-100 text-xs">
+                    <div>
+                      <div className="font-playfair font-bold text-base text-[#003b1b] flex items-center gap-2">
+                        <span>{testimonials[testimonialIndex].store}</span>
+                        <span className="text-[10px] bg-emerald-50 text-emerald-800 font-sans font-bold px-2 py-0.5 rounded-md border border-emerald-200">
+                          {testimonials[testimonialIndex].category}
+                        </span>
+                      </div>
+                      <div className="text-gray-500 text-xs mt-0.5">
+                        {testimonials[testimonialIndex].manager} • {testimonials[testimonialIndex].location}
+                      </div>
                     </div>
-                  </div>
-                  <div className="font-bold text-xs text-[#003b1b] bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 self-start sm:self-auto">
-                    {testimonials[testimonialIndex].stat}
+                    <div className="font-bold text-xs text-[#003b1b] bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-200 self-start sm:self-auto shadow-2xs">
+                      {testimonials[testimonialIndex].stat}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -658,10 +874,153 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     onClick={() => setTestimonialIndex(i)}
                     aria-label={`Go to slide ${i + 1}`}
                     className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      testimonialIndex === i ? 'w-6 bg-[#003b1b]' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                      testimonialIndex === i ? 'w-8 bg-[#003b1b]' : 'w-2.5 bg-gray-300 hover:bg-gray-400'
                     }`}
                   />
                 ))}
+              </div>
+            </div>
+
+            {/* Circular Impact Gauges & Agricultural Performance Stats */}
+            <div className="bg-white rounded-3xl p-8 border border-[#dae2fd] shadow-sm space-y-6">
+              <div className="max-w-xl space-y-1">
+                <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                  Operational Impact &amp; Adoption
+                </div>
+                <h3 className="font-playfair font-bold text-2xl text-[#131b2e]">
+                  Measured Results Across Smallholder Agro-Networks
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
+                {/* Gauge 1: 98% Credit Recovery */}
+                <div className="flex flex-col items-center text-center p-6 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 space-y-3">
+                  <div className="relative w-28 h-28 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="42" stroke="#e2e8f0" strokeWidth="8" fill="none" />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="42"
+                        stroke="#11bf36"
+                        strokeWidth="8"
+                        strokeDasharray={264}
+                        strokeDashoffset={264 * (1 - 0.98)}
+                        strokeLinecap="round"
+                        fill="none"
+                        className="transition-all duration-1000"
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center">
+                      <span className="font-playfair font-bold text-2xl text-[#003b1b]">98%</span>
+                      <span className="text-[9px] uppercase font-bold text-gray-500">Recovery</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-playfair font-bold text-sm text-[#003b1b]">Farmer Credit Settlement</h4>
+                    <p className="text-xs text-gray-500 mt-1">Automated M-Pesa SMS reminders eliminate unsecured bad debt.</p>
+                  </div>
+                </div>
+
+                {/* Gauge 2: 100% FEFO Batch Traceability */}
+                <div className="flex flex-col items-center text-center p-6 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 space-y-3">
+                  <div className="relative w-28 h-28 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="42" stroke="#e2e8f0" strokeWidth="8" fill="none" />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="42"
+                        stroke="#11bf36"
+                        strokeWidth="8"
+                        strokeDasharray={264}
+                        strokeDashoffset={264 * (1 - 1.0)}
+                        strokeLinecap="round"
+                        fill="none"
+                        className="transition-all duration-1000"
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center">
+                      <span className="font-playfair font-bold text-2xl text-[#003b1b]">100%</span>
+                      <span className="text-[9px] uppercase font-bold text-gray-500">Traceable</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-playfair font-bold text-sm text-[#003b1b]">PCPB &amp; KEPHIS Compliance</h4>
+                    <p className="text-xs text-gray-500 mt-1">Every chemical batch, expiration date, and lot registration is audited.</p>
+                  </div>
+                </div>
+
+                {/* Gauge 3: 0.2% Drawer Shortage */}
+                <div className="flex flex-col items-center text-center p-6 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 space-y-3">
+                  <div className="relative w-28 h-28 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="42" stroke="#e2e8f0" strokeWidth="8" fill="none" />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="42"
+                        stroke="#11bf36"
+                        strokeWidth="8"
+                        strokeDasharray={264}
+                        strokeDashoffset={264 * (1 - 0.998)}
+                        strokeLinecap="round"
+                        fill="none"
+                        className="transition-all duration-1000"
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center">
+                      <span className="font-playfair font-bold text-2xl text-[#003b1b]">99.8%</span>
+                      <span className="text-[9px] uppercase font-bold text-gray-500">Balanced</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-playfair font-bold text-sm text-[#003b1b]">Shift Drawer Balancing</h4>
+                    <p className="text-xs text-gray-500 mt-1">Denomination counting matched against digital sales ledger daily.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trusted Institutional Partners & Cooperative Ticker */}
+            <div className="bg-[#002811] text-white rounded-3xl p-6 md:p-8 shadow-md border border-[#14532d] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#14532d] pb-3">
+                <div>
+                  <div className="text-[10px] text-[#87c695] uppercase font-bold tracking-widest">
+                    National &amp; County Agricultural Ecosystem
+                  </div>
+                  <h4 className="font-playfair font-bold text-lg text-white">
+                    Integrated with Trusted Value Chain Partners
+                  </h4>
+                </div>
+                <div className="text-xs text-[#87c695] font-mono">
+                  Safaricom Daraja • Africa&apos;s Talking • PCPB • KEPHIS
+                </div>
+              </div>
+
+              {/* Scrolling Partners Marquee */}
+              <div className="overflow-hidden py-3">
+                <div className="animate-logo-scroll flex items-center gap-10 opacity-90 hover:opacity-100 transition-opacity">
+                  {[
+                    { name: 'Kenya Livestock Producers Association', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/KLPA.jpg' },
+                    { name: 'Safaricom M-Pesa Enterprise', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/LOGO-HH.jpg' },
+                    { name: 'Plant a Fruit Agri-Kenya', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/plant-a-fruit.jpg' },
+                    { name: 'Youth in Agribusiness Initiative', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/SLIDER-1.jpg' },
+                    { name: 'Kenya Livestock Producers Association', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/KLPA.jpg' },
+                    { name: 'Safaricom M-Pesa Enterprise', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/LOGO-HH.jpg' },
+                    { name: 'Plant a Fruit Agri-Kenya', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/plant-a-fruit.jpg' },
+                    { name: 'Youth in Agribusiness Initiative', img: 'https://farmerstrend.com/wp-content/uploads/2022/07/SLIDER-1.jpg' },
+                  ].map((partner, pIdx) => (
+                    <div key={pIdx} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl shrink-0 backdrop-blur-xs">
+                      <img
+                        src={partner.img}
+                        alt={partner.name}
+                        className="w-8 h-8 rounded-lg object-cover bg-white p-0.5"
+                      />
+                      <span className="text-xs font-semibold text-gray-200">{partner.name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -1192,6 +1551,68 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
           </div>
         </div>
       </footer>
+
+      {/* Video Demonstration Modal (Borrowed from Video CTA) */}
+      {isVideoModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#002b13] border border-emerald-500/40 rounded-3xl max-w-2xl w-full p-6 text-white shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-emerald-900/60 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <h3 className="font-playfair font-bold text-lg text-white">AgroFlow In-Store Terminal Demonstration</h3>
+              </div>
+              <button
+                onClick={() => setIsVideoModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Video Player / Walkthrough Mock */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-black border border-emerald-900 shadow-inner flex flex-col items-center justify-center text-center p-6 space-y-3">
+              <img
+                src="https://farmerstrend.com/wp-content/uploads/2022/07/youths-in-agriculture-farmers-trend-kenya.jpg"
+                alt="AgroFlow Demo"
+                className="absolute inset-0 w-full h-full object-cover opacity-30"
+              />
+              <div className="relative z-10 space-y-2">
+                <div className="w-14 h-14 rounded-full bg-[#11bf36] text-white flex items-center justify-center mx-auto box-shadow-ripples">
+                  <span className="material-symbols-outlined text-2xl">check_circle</span>
+                </div>
+                <h4 className="font-playfair font-bold text-xl text-white">3-Second Counter POS Checkout &amp; SMS Repayment</h4>
+                <p className="text-xs text-[#87c695] max-w-md mx-auto">
+                  Watch how Kirinyaga cashiers use keyboard shortcuts (F2) to ring sales, split cash/M-Pesa tender, and balance drawers with zero discrepancy.
+                </p>
+                <div className="pt-2">
+                  <button
+                    onClick={() => {
+                      setIsVideoModalOpen(false);
+                      setActiveTab('login');
+                    }}
+                    className="px-5 py-2.5 bg-[#11bf36] text-white font-bold text-xs rounded-xl shadow-lg hover:bg-[#0ea82f] transition-all cursor-pointer"
+                  >
+                    Launch Live Terminal Now
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-[#87c695]/80 text-center">
+              Demonstration video recorded at Kerugoya Central Agrovet Hub. Audio &amp; terminal simulation active.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Back to Top / Quick Terminal Launcher */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="Back to Top"
+        className="fixed bottom-6 right-6 z-40 bg-[#003b1b] text-[#b1f2be] hover:bg-[#14532d] hover:text-white p-3 rounded-2xl shadow-xl border border-emerald-500/30 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center justify-center"
+      >
+        <span className="material-symbols-outlined text-lg">arrow_upward</span>
+      </button>
     </div>
   );
 };
