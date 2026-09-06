@@ -1,0 +1,6 @@
+{
+  "name": "AgroFlow - Agribusiness Operating System",
+  "description": "AgroFlow Agri-OS enterprise operations cockpit, POS counter, inventory batch management, farmer credit ledger, and agronomic advisory for East African agrovets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
