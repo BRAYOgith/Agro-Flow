@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScreenType } from '../types';
 
 interface SidebarProps {
@@ -28,6 +28,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenSubscriptionModal,
   onOpenDarajaModal,
 }) => {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   const formattedReceivables =
     totalReceivables >= 1000
       ? `${(totalReceivables / 1000).toFixed(0)}k`
@@ -111,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="px-3 pt-3 pb-2">
         <button
           onClick={() => onNavigate('sales-pos')}
-          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-md ${
+          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-md cursor-pointer ${
             currentScreen === 'sales-pos'
               ? 'bg-[#b1f2be] text-[#00210d] ring-2 ring-white/50 shadow-lg'
               : 'bg-[#14532d] text-[#87c695] hover:bg-[#1b6b3b] hover:text-white'
@@ -128,7 +130,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Navigation List */}
-      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto no-scrollbar">
         <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[#87c695]/70">
           Agro-Enterprise Operations
         </div>
@@ -139,13 +141,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-all ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'bg-white/10 text-white font-semibold shadow-inner border-l-4 border-[#87c695]'
+                  ? 'bg-[#14532d] text-white shadow-xs font-semibold'
                   : 'text-white/80 hover:bg-white/5 hover:text-white'
               }`}
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-3 truncate">
                 <span
                   className={`material-symbols-outlined text-xl shrink-0 ${
                     isActive ? 'text-[#87c695]' : 'text-white/60'
@@ -177,52 +179,90 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       </nav>
 
-      {/* Footer Controls & Sign Out */}
-      <div className="p-3 bg-[#002b13] border-t border-[#14532d] space-y-1.5">
-        {onOpenSubscriptionModal && (
+      {/* Footer: Progressive Disclosure Settings & Clean Sign Out */}
+      <div className="p-3 bg-[#002b13] border-t border-[#14532d] space-y-2">
+        {/* Collapsible Progressive Disclosure Drawer for Settings */}
+        <div className="rounded-xl border border-[#14532d] bg-[#003417] overflow-hidden transition-all duration-200">
           <button
-            onClick={onOpenSubscriptionModal}
-            className="w-full px-3 py-1.5 bg-[#14532d] hover:bg-[#1b6b3b] text-[#b1f2be] rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/30 transition-colors cursor-pointer"
+            onClick={() => setIsSettingsOpen((prev) => !prev)}
+            className="w-full px-3 py-2 flex items-center justify-between text-xs font-semibold text-[#87c695] hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-sm">verified</span>
-            <span>SaaS License &amp; Renewal</span>
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-base">settings</span>
+              <span>Settings &amp; Platform</span>
+            </div>
+            <span
+              className={`material-symbols-outlined text-base text-[#87c695] transition-transform duration-200 ${
+                isSettingsOpen ? 'rotate-180' : ''
+              }`}
+            >
+              expand_more
+            </span>
           </button>
-        )}
 
-        {onOpenDarajaModal && (
-          <button
-            onClick={onOpenDarajaModal}
-            className="w-full px-3 py-1.5 bg-white/5 hover:bg-white/10 text-[#87c695] hover:text-white rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/20 transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-sm">phone_android</span>
-            <span>M-Pesa Till Setup</span>
-          </button>
-        )}
+          {/* Disclosed Settings Options */}
+          {isSettingsOpen && (
+            <div className="p-2 space-y-1 bg-[#002410] border-t border-[#14532d] animate-fade-in text-xs">
+              {onOpenSubscriptionModal && (
+                <button
+                  onClick={onOpenSubscriptionModal}
+                  className="w-full px-2.5 py-1.5 text-left text-[#b1f2be] hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm text-[#87c695]">verified</span>
+                  <div className="truncate">
+                    <div className="font-semibold text-xs leading-tight">SaaS License &amp; Renewal</div>
+                    <div className="text-[10px] text-[#87c695]/80">Daily wallet &amp; status</div>
+                  </div>
+                </button>
+              )}
 
-        <a
-          href="/legal"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full px-3 py-1.5 bg-white/5 hover:bg-white/10 text-[#87c695] hover:text-white rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/20 transition-colors"
-        >
-          <span className="material-symbols-outlined text-sm">gavel</span>
-          <span>Legal &amp; Compliance Hub</span>
-        </a>
+              {onOpenDarajaModal && (
+                <button
+                  onClick={onOpenDarajaModal}
+                  className="w-full px-2.5 py-1.5 text-left text-gray-200 hover:text-white hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm text-[#87c695]">phone_android</span>
+                  <div className="truncate">
+                    <div className="font-semibold text-xs leading-tight">M-Pesa Till Setup</div>
+                    <div className="text-[10px] text-gray-400">Store Till &amp; Daraja Keys</div>
+                  </div>
+                </button>
+              )}
 
-        {onOpenPlatformUpdate && (
-          <button
-            onClick={onOpenPlatformUpdate}
-            className="w-full px-3 py-1.5 bg-white/5 hover:bg-white/10 text-[#87c695] hover:text-white rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-[#87c695]/20 transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined text-sm">system_update</span>
-            <span>Platform Cockpit</span>
-          </button>
-        )}
+              <a
+                href="/legal"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full px-2.5 py-1.5 text-left text-gray-200 hover:text-white hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-sm text-[#87c695]">gavel</span>
+                <div className="truncate">
+                  <div className="font-semibold text-xs leading-tight">Legal &amp; Compliance Hub</div>
+                  <div className="text-[10px] text-gray-400">Terms, Privacy &amp; Policies</div>
+                </div>
+              </a>
 
+              {onOpenPlatformUpdate && (
+                <button
+                  onClick={onOpenPlatformUpdate}
+                  className="w-full px-2.5 py-1.5 text-left text-gray-200 hover:text-white hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-sm text-[#87c695]">system_update</span>
+                  <div className="truncate">
+                    <div className="font-semibold text-xs leading-tight">Platform Cockpit</div>
+                    <div className="text-[10px] text-gray-400">Staff PINs &amp; SQLite Backup</div>
+                  </div>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Streamlined Sign Out Trigger */}
         {onSignOut && (
           <button
             onClick={onSignOut}
-            className="w-full px-3 py-1.5 bg-red-950/60 hover:bg-red-900 text-red-200 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 border border-red-800/30 transition-colors cursor-pointer"
+            className="w-full px-3 py-2 bg-red-950/40 hover:bg-red-950/80 text-red-200 hover:text-white rounded-xl font-semibold text-xs flex items-center justify-center gap-2 border border-red-900/40 transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">logout</span>
             <span>Sign Out</span>
