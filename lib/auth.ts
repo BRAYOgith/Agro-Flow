@@ -120,3 +120,32 @@ export function assertStoreAccess(user: AuthUser, targetStoreId: string): void {
     throw new AuthError('Forbidden: Cross-tenant store access prohibited.', 403);
   }
 }
+
+/**
+ * Constant-time verification of internal service-to-service or webhook shared secrets.
+ * Fails closed (returns false) if expected secret is not configured or input length mismatches.
+ */
+export function verifyInternalSecret(
+  providedSecret: string | null | undefined,
+  expectedSecret: string | null | undefined
+): boolean {
+  if (!expectedSecret || !providedSecret) return false;
+  if (typeof providedSecret !== 'string' || typeof expectedSecret !== 'string') return false;
+
+  const providedBuffer = Buffer.from(providedSecret, 'utf-8');
+  const expectedBuffer = Buffer.from(expectedSecret, 'utf-8');
+
+  if (providedBuffer.length !== expectedBuffer.length) return false;
+
+  const { timingSafeEqual } = require('crypto');
+  return timingSafeEqual(providedBuffer, expectedBuffer);
+}
+
+/**
+ * Strips carriage returns (\r) and newlines (\n) to prevent CRLF injection into headers/logs/SMS.
+ */
+export function sanitizeHeaderValue(value: string | null | undefined): string {
+  if (!value) return '';
+  return String(value).replace(/[\r\n]+/g, ' ').trim();
+}
+

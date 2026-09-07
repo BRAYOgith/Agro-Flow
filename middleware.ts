@@ -47,12 +47,13 @@ async function verifyToken(token: string): Promise<any | null> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Public paths that do not require auth header
+  // Public paths that do not require user session cookies / Bearer auth (they handle rate limits or webhook secrets internally)
   if (
     pathname.startsWith('/api/auth/login') ||
     pathname.startsWith('/api/auth/logout') ||
     pathname.startsWith('/api/health') ||
     pathname.startsWith('/api/payments/mpesa/callback') ||
+    pathname.startsWith('/api/saas/callback') ||
     !pathname.startsWith('/api')
   ) {
     return NextResponse.next();

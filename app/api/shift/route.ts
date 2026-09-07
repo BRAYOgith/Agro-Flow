@@ -26,11 +26,12 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   try {
     const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager', 'cashier']);
     const body = await request.json();
     const { denomination, count } = body;
 
-    if (!denomination || count === undefined) {
-      return NextResponse.json({ error: 'Missing denomination or count' }, { status: 400 });
+    if (!denomination || count === undefined || typeof count !== 'number' || count < 0) {
+      return NextResponse.json({ error: 'Valid denomination and non-negative count required' }, { status: 400 });
     }
 
     const row = queryOne<DenominationTally>('SELECT * FROM denominations WHERE denomination = ?;', [denomination]);

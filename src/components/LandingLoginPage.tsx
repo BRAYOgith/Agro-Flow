@@ -437,7 +437,13 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 key={heroSlide}
                 src={heroSlides[heroSlide].image}
                 alt={heroSlides[heroSlide].imageAlt}
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 animate-fade-in filter brightness-[0.82] contrast-[1.05]"
+                width={1920}
+                height={1080}
+                // @ts-ignore
+                fetchpriority={heroSlide === 0 ? 'high' : 'auto'}
+                loading={heroSlide === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out animate-fade-in filter brightness-[0.82] contrast-[1.05]"
               />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/40" />
@@ -447,7 +453,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 type="button"
                 onClick={prevHeroSlide}
                 aria-label="Previous Hero Slide"
-                className="absolute left-4 sm:left-8 md:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border-2 border-white/20"
+                className="absolute left-4 sm:left-8 md:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center shadow-2xl transition-transform duration-200 transform hover:scale-110 active:scale-95 cursor-pointer border-2 border-white/20"
               >
                 <span className="material-symbols-outlined text-2xl sm:text-3xl">chevron_left</span>
               </button>
@@ -456,7 +462,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 type="button"
                 onClick={nextHeroSlide}
                 aria-label="Next Hero Slide"
-                className="absolute right-4 sm:right-8 md:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border-2 border-white/20"
+                className="absolute right-4 sm:right-8 md:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center shadow-2xl transition-transform duration-200 transform hover:scale-110 active:scale-95 cursor-pointer border-2 border-white/20"
               >
                 <span className="material-symbols-outlined text-2xl sm:text-3xl">chevron_right</span>
               </button>
@@ -468,8 +474,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     type="button"
                     onClick={() => setHeroSlide(idx)}
                     aria-label={`Go to hero slide ${idx + 1}`}
-                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                      heroSlide === idx ? 'w-10 bg-[#11bf36] shadow-lg' : 'w-2.5 bg-white/40 hover:bg-white/80'
+                    className={`h-2.5 w-10 origin-center rounded-full transition-all duration-300 cursor-pointer ${
+                      heroSlide === idx
+                        ? 'bg-[#11bf36] shadow-lg scale-x-100 opacity-100'
+                        : 'bg-white/40 hover:bg-white/80 scale-x-[0.28] opacity-70'
                     }`}
                   />
                 ))}
@@ -530,7 +538,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
                     <div>
                       <figure className="relative h-48 overflow-hidden bg-gray-100">
-                        <img src="/media/cabbage.jpg" alt="Counter POS & Inputs" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src="/media/cabbage.jpg" alt="Counter POS & Inputs" width={400} height={250} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </figure>
                       <div className="p-5 relative">
                         <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
@@ -554,7 +562,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
                     <div>
                       <figure className="relative h-48 overflow-hidden bg-gray-100">
-                        <img src="/media/farmer.jpg" alt="Smallholder Credit Book" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src="/media/farmer.jpg" alt="Smallholder Credit Book" width={400} height={250} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </figure>
                       <div className="p-5 relative">
                         <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
@@ -578,7 +586,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
                     <div>
                       <figure className="relative h-48 overflow-hidden bg-gray-100">
-                        <img src="/media/cows.jpg" alt="Livestock Farming" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src="/media/cows.jpg" alt="Livestock Farming" width={400} height={250} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </figure>
                       <div className="p-5 relative">
                         <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
@@ -602,7 +610,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
                     <div>
                       <figure className="relative h-48 overflow-hidden bg-gray-100">
-                        <img src="/media/fruit.jpg" alt="Certified Seed Lots" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src="/media/fruit.jpg" alt="Certified Seed Lots" width={400} height={250} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </figure>
                       <div className="p-5 relative">
                         <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
@@ -626,7 +634,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
                     <div>
                       <figure className="relative h-48 overflow-hidden bg-[#faf8ff] flex items-center justify-center p-4">
-                        <img src="/media/seedfarm.jpg" alt="Diseases & Crop Protection" className="max-h-36 object-contain group-hover:scale-105 transition-transform duration-500" />
+                        <img src="/media/seedfarm.jpg" alt="Diseases & Crop Protection" width={300} height={200} loading="lazy" decoding="async" className="max-h-36 object-contain group-hover:scale-105 transition-transform duration-500" />
                       </figure>
                       <div className="p-5 relative">
                         <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
@@ -650,7 +658,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
                     <div>
                       <figure className="relative h-48 overflow-hidden bg-[#002410] flex items-center justify-center p-4">
-                        <img src="/media/yielder.png" alt="Farming Operations" className="max-h-24 object-contain group-hover:scale-105 transition-transform duration-500" />
+                        <img src="/media/yielder.png" alt="Farming Operations" width={300} height={200} loading="lazy" decoding="async" className="max-h-24 object-contain group-hover:scale-105 transition-transform duration-500" />
                       </figure>
                       <div className="p-5 relative">
                         <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
@@ -914,7 +922,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     >
                       <div>
                         <div className="relative h-48 overflow-hidden bg-gray-100">
-                          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          <img src={article.image} alt={article.title} width={400} height={250} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         </div>
                         <div className="p-5 space-y-2">
                           <h3 className="font-playfair font-bold text-base text-[#131b2e] group-hover:text-[#11bf36] transition-colors leading-snug">
@@ -1017,6 +1025,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                         <img
                           src={fieldReviews[reviewSlide].photo}
                           alt={fieldReviews[reviewSlide].manager}
+                          width={56}
+                          height={56}
+                          loading="lazy"
+                          decoding="async"
                           className="w-14 h-14 rounded-2xl object-cover border-2 border-[#11bf36] shrink-0 shadow-md"
                         />
                         <div>

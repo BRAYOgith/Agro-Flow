@@ -1,12 +1,29 @@
 import { NextResponse } from 'next/server';
 import { queryOne, execute } from '@/lib/db/index';
+import { verifyInternalSecret } from '@/lib/auth';
+
+const EXPECTED_SAAS_SECRET = process.env.SAAS_WEBHOOK_SECRET || 'agroflow-saas-webhook-secret-2026';
 
 /**
  * Safaricom M-Pesa Daraja Webhook for AgroFlow SaaS Subscription Recharges
+ * Validates cryptographic/shared secret using constant-time evaluation to prevent fraudulent recharges.
  * Implements strict idempotency: duplicate callbacks with the same M-Pesa receipt are rejected.
  */
 export async function POST(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const providedSecret =
+      request.headers.get('x-saas-webhook-secret') ||
+      searchParams.get('secret') ||
+      searchParams.get('token');
+
+    if (!verifyInternalSecret(providedSecret, EXPECTED_SAAS_SECRET)) {
+      return NextResponse.json(
+        { ResultCode: 1, ResultDesc: 'Unauthorized: Invalid or missing SaaS webhook signature' },
+        { status: 401 }
+      );
+    }
+
     const payload = await request.json();
 
     // Safaricom Daraja standard callback structure

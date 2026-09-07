@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { queryOne } from '@/lib/db/index';
 import { decryptSecret } from '@/lib/crypto';
+import { requireAuth, assertStoreAccess, AuthError } from '@/lib/auth';
 
 /**
  * Safaricom Daraja STK Push Initiation Endpoint
@@ -8,12 +9,23 @@ import { decryptSecret } from '@/lib/crypto';
  */
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
     const body = await request.json();
-    const { storeId = 'store-01', phone, amount, accountReference = 'AgroFlow-Sale' } = body;
+    const { storeId = user.storeId || 'store-01', phone, amount, accountReference = 'AgroFlow-Sale' } = body;
 
-    if (!phone || !amount) {
+    // Prevent multi-tenant IDOR: Cashiers/Managers can only trigger payments for their authorized store
+    assertStoreAccess(user, storeId);
+
+    if (!amount || Number(amount) <= 0) {
       return NextResponse.json(
-        { error: 'Phone number and amount are required' },
+        { error: 'Valid payment amount is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!phone || String(phone).trim() === '') {
+      return NextResponse.json(
+        { error: 'Customer phone number is required' },
         { status: 400 }
       );
     }
@@ -63,7 +75,7 @@ export async function POST(request: Request) {
             PartyA: formattedPhone,
             PartyB: tillNumber,
             PhoneNumber: formattedPhone,
-            CallBackURL: `${process.env.NEXT_PUBLIC_APP_URL || 'https://agroflow.co.ke'}/api/payments/mpesa/callback`,
+            CallBackURL: `${process.env.NEXT_PUBLIC_APP_URL || 'https://agroflow.co.ke'}/api/payments/mpesa/callback?secret=${encodeURIComponent(process.env.DARAJA_WEBHOOK_SECRET || 'agroflow-daraja-webhook-secret-2026')}`,
             AccountReference: accountReference,
             TransactionDesc: `Farm Inputs Purchase at ${store?.store_name || 'AgroFlow'}`,
           };
@@ -108,6 +120,9 @@ export async function POST(request: Request) {
       amount,
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json(
       { error: error.message || 'Failed to initiate M-Pesa payment' },
       { status: 500 }

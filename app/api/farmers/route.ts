@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { runMigrations } from '@/lib/db/migrations';
 import { seedInitialData } from '@/lib/db/seed';
 import { queryAll, execute } from '@/lib/db/index';
-import { requireAuth, AuthError } from '@/lib/auth';
+import { requireAuth, sanitizeHeaderValue, AuthError } from '@/lib/auth';
 import { FarmerRecord } from '@/src/types';
 
 export const dynamic = 'force-dynamic';
@@ -60,18 +60,28 @@ export async function POST(request: Request) {
     const f: FarmerRecord = await request.json();
     const id = f.id || `FARM-${Math.floor(1000 + Math.random() * 9000)}`;
 
+    const cleanName = sanitizeHeaderValue(f.name);
+    const cleanPhone = sanitizeHeaderValue(f.phone);
+    const cleanNationalId = sanitizeHeaderValue(f.nationalId);
+    const cleanCooperative = sanitizeHeaderValue(f.cooperative);
+    const cleanLocation = sanitizeHeaderValue(f.location);
+
+    if (!cleanName || !cleanPhone) {
+      return NextResponse.json({ error: 'Farmer name and phone are required.' }, { status: 400 });
+    }
+
     execute(
       `INSERT INTO farmers (id, nationalId, name, phone, location, acreage, crops, cooperative, coopMemberNo, verificationStatus, creditLimit, outstandingBalance, dueDate, daysOverdue, lastPurchaseDate, status, notes, soilPh, agronomistAdvisor)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
       [
         id,
-        f.nationalId,
-        f.name,
-        f.phone,
-        f.location,
+        cleanNationalId,
+        cleanName,
+        cleanPhone,
+        cleanLocation,
         f.acreage,
         f.crops,
-        f.cooperative,
+        cleanCooperative,
         f.coopMemberNo,
         f.verificationStatus,
         f.creditLimit,
@@ -89,7 +99,7 @@ export async function POST(request: Request) {
     execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
       user.username,
       'FARMER_RECORD_CREATED',
-      `Registered new farmer ${f.name} (${id}) under cooperative ${f.cooperative} by ${user.username}.`,
+      `Registered new farmer ${cleanName} (${id}) under cooperative ${cleanCooperative} by ${user.username}.`,
     ]);
 
     return NextResponse.json({ success: true, id });
