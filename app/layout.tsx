@@ -1,9 +1,36 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AgroFlowGlobalStructuredData } from '@/src/components/StructuredData';
 
 export const metadata: Metadata = {
-  title: 'AgroFlow - Agribusiness Operating System',
-  description: 'AgroFlow Agri-OS enterprise operations cockpit, POS counter, inventory batch management, and farmer credit ledger.',
+  metadataBase: new URL('https://agroflow.co.ke'),
+  title: {
+    default: 'AgroFlow - Agribusiness Operating System',
+    template: '%s | AgroFlow Agri-OS',
+  },
+  description:
+    'AgroFlow Agri-OS enterprise operations cockpit, POS counter, inventory batch management, and farmer credit ledger for East African agrovets.',
+  applicationName: 'AgroFlow Agri-OS',
+  keywords: [
+    'AgroFlow',
+    'Agribusiness Operating System',
+    'Agrovet POS',
+    'Kenya Agrovet software',
+    'Farmer credit ledger',
+    'Batch inventory tracking',
+    'M-Pesa Daraja POS',
+  ],
+  authors: [{ name: 'AgroFlow Engineering' }],
+  creator: 'AgroFlow Agri-OS Ltd',
+  openGraph: {
+    type: 'website',
+    locale: 'en_KE',
+    url: 'https://agroflow.co.ke',
+    siteName: 'AgroFlow Agri-OS',
+    title: 'AgroFlow - Agribusiness Operating System',
+    description:
+      'Cloud & edge-ready operations cockpit, POS counter, FEFO inventory tracking, and farmer credit ledger for East African agrovets.',
+  },
 };
 
 export default function RootLayout({
@@ -26,6 +53,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#faf8ff] text-[#131b2e] antialiased min-h-screen">
+        <AgroFlowGlobalStructuredData />
         {children}
       </body>
     </html>

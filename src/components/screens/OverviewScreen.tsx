@@ -19,7 +19,7 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'analytics' | 'live-stream' | 'alerts'>('analytics');
 
-  // Calculate dynamic sales metrics strictly from database transactions
+  
   const totalGrossSales = transactions.reduce((acc, t) => acc + t.totalAmount, 0);
   const mpesaSales = transactions.filter((t) => t.channel === 'M-Pesa').reduce((acc, t) => acc + t.totalAmount, 0);
   const cashSales = transactions.filter((t) => t.channel === 'Cash').reduce((acc, t) => acc + t.totalAmount, 0);
@@ -27,12 +27,12 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
   const lowStockProducts = products.filter((p) => p.stockCount <= p.minStock);
   const expiringSoonProducts = products.filter((p) => p.daysToExpiry <= 60);
 
-  // Dynamic 7-Day chart bars based on database transactions
+  
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const todayDayName = new Date().toLocaleDateString('en-US', { weekday: 'short' });
 
   const weeklySales = daysOfWeek.map((day) => {
-    // Group transactions by day matching if any
+    
     const isToday = day === todayDayName || (todayDayName.startsWith(day));
     const dayTotal = isToday ? totalGrossSales : 0;
     return {
@@ -47,14 +47,13 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Top Navigation & View Switcher Bar */}
       <div className="bg-white rounded-xl p-3 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveTab('analytics')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'analytics'
-                ? 'bg-[#003b1b] text-white shadow-xs'
+                ? 'bg-[#11bf36] text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -62,18 +61,18 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('live-stream')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'live-stream'
-                ? 'bg-[#003b1b] text-white shadow-xs'
+                ? 'bg-[#11bf36] text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-[#11bf36] animate-pulse"></span>
             Live Terminal Stream ({transactions.length})
           </button>
           <button
             onClick={() => setActiveTab('alerts')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'alerts'
                 ? 'bg-red-700 text-white shadow-xs'
                 : 'bg-red-50 text-red-700 hover:bg-red-100'
@@ -85,17 +84,15 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
 
         <button
           onClick={onOpenQuickSale}
-          className="px-3.5 py-1.5 rounded-lg bg-[#b1f2be] text-[#00210d] text-xs font-bold hover:bg-[#87c695] flex items-center gap-1.5 transition-colors shadow-xs"
+          className="px-4 py-2 rounded-lg bg-[#11bf36] hover:bg-[#0ea82f] text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-md cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
         >
           <span className="material-symbols-outlined text-sm">point_of_sale</span>
           Launch POS Counter [F2]
         </button>
       </div>
 
-      {/* Top 4 KPI metric cards strictly calculated from database */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Metric 1: Today's Gross Sales */}
-        <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs">
+        <div className="bg-white rounded-xl p-4 border border-[#dae2fd] border-t-4 border-t-[#11bf36] shadow-xs">
           <span className="font-semibold uppercase tracking-wider text-[11px] text-gray-500 block mb-1">
             Today's Gross Sales
           </span>
@@ -103,25 +100,23 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             KES {totalGrossSales.toLocaleString()}
           </div>
           <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between text-[11px]">
-            <span className="text-gray-500">M-Pesa: <strong className="text-[#003b1b]">KES {mpesaSales.toLocaleString()}</strong></span>
+            <span className="text-gray-500">M-Pesa: <strong className="text-[#11bf36]">KES {mpesaSales.toLocaleString()}</strong></span>
             <span className="text-gray-500">Cash: <strong className="text-[#131b2e]">KES {cashSales.toLocaleString()}</strong></span>
           </div>
         </div>
 
-        {/* Metric 2: Estimated Gross Profit */}
-        <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs">
+        <div className="bg-white rounded-xl p-4 border border-[#dae2fd] border-t-4 border-t-[#11bf36] shadow-xs">
           <span className="font-semibold uppercase tracking-wider text-[11px] text-gray-500 block mb-1">
             Est. Gross Profit
           </span>
-          <div className="text-2xl font-extrabold text-[#006a61] tracking-tight font-mono">
+          <div className="text-2xl font-extrabold text-[#11bf36] tracking-tight font-mono">
             KES {Math.round(totalGrossSales * 0.22).toLocaleString()}
           </div>
           <div className="mt-3 pt-2.5 border-t border-gray-100 text-[11px] text-gray-500">
-            <span>Blended Margin: <strong>{totalGrossSales > 0 ? '22.0%' : '0.0%'}</strong></span>
+            <span>Blended Margin: <strong className="text-[#11bf36]">{totalGrossSales > 0 ? '22.0%' : '0.0%'}</strong></span>
           </div>
         </div>
 
-        {/* Metric 3: Farmer Credit Book */}
         <div
           onClick={() => onNavigate('credit-debt-ledger')}
           className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs hover:shadow-md transition-all cursor-pointer group hover:border-[#006a61]"
@@ -137,7 +132,6 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
           </div>
         </div>
 
-        {/* Metric 4: Inventory Risk */}
         <div
           onClick={() => onNavigate('inventory-stock')}
           className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs hover:shadow-md transition-all cursor-pointer group hover:border-[#ba1a1a]"
@@ -154,10 +148,8 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
         </div>
       </div>
 
-      {/* Main Tab Content */}
       {activeTab === 'analytics' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Weekly Sales Chart (2 cols) */}
           <div className="lg:col-span-2 bg-white rounded-xl p-5 border border-[#dae2fd] shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -168,12 +160,11 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                   Calculated dynamically from real counter sale transactions
                 </p>
               </div>
-              <span className="text-xs font-mono font-bold text-[#006a61] bg-[#86f2e4]/20 px-2.5 py-1 rounded-md">
+              <span className="text-xs font-mono font-bold text-[#11bf36] bg-[#eaf8ed] border border-[#11bf36]/30 px-2.5 py-1 rounded-md">
                 7-Day Revenue: KES {totalGrossSales.toLocaleString()}
               </span>
             </div>
 
-            {/* Bar Chart Visualization */}
             <div className="h-48 flex items-end justify-between gap-3 pt-4 px-2 border-b border-gray-100">
               {weeklySales.map((bar) => {
                 const heightPercent = bar.amount > 0 ? Math.max(5, Math.round((bar.amount / maxWeeklyAmount) * 100)) : 0;
@@ -187,13 +178,13 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
                       <div
                         style={{ height: `${heightPercent}%` }}
                         className={`w-full rounded-t-md transition-all duration-500 ${
-                          bar.amount > 0 ? 'bg-[#006a61]' : 'bg-gray-200'
+                          bar.amount > 0 ? 'bg-[#11bf36]' : 'bg-gray-200'
                         }`}
                       />
                     </div>
 
                     <div className="text-center">
-                      <span className={`text-xs font-semibold ${bar.current ? 'text-[#006a61]' : 'text-gray-600'}`}>
+                      <span className={`text-xs font-semibold ${bar.current ? 'text-[#11bf36] font-bold' : 'text-gray-600'}`}>
                         {bar.day}
                       </span>
                     </div>
@@ -203,7 +194,6 @@ export const OverviewScreen: React.FC<OverviewScreenProps> = ({
             </div>
           </div>
 
-          {/* Fast Movers Sidebar Card (1 col) */}
           <div className="bg-white rounded-xl p-5 border border-[#dae2fd] shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-sm text-[#131b2e]">Dispensary Inventory</h3>

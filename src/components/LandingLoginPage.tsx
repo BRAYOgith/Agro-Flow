@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../services/api';
 
 interface LandingLoginPageProps {
@@ -12,7 +12,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Mouse position for consultancy-style Cursor Glow
+  
   const [mousePos, setMousePos] = useState({ x: -400, y: -400 });
 
   useEffect(() => {
@@ -23,32 +23,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Noticeable Rotating Hero Accent (consultancy style)
-  const rotatingWords = [
-    { highlight: 'Speed', suffix: 'to Counter Checkout.' },
-    { highlight: 'Certainty', suffix: 'to Smallholder Credit.' },
-    { highlight: 'Zero Loss', suffix: 'to Expired Inputs.' },
-    { highlight: 'Precision', suffix: 'to Shift Balancing.' },
-  ];
-  const [rotatingIndex, setRotatingIndex] = useState(0);
-  const [rotatingFade, setRotatingFade] = useState(true);
-
-  useEffect(() => {
-    if (activeTab !== 'home') return;
-    const interval = setInterval(() => {
-      setRotatingFade(false);
-      setTimeout(() => {
-        setRotatingIndex((prev) => (prev + 1) % rotatingWords.length);
-        setRotatingFade(true);
-      }, 300);
-    }, 3800);
-    return () => clearInterval(interval);
-  }, [activeTab, rotatingWords.length]);
-
-  // Video Modal State for In-Store Demo
+  
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  // Field Review Dispatch Data (authentic Kenyan agrovets in Kirinyaga & Mount Kenya)
+  
   const fieldReviews = [
     {
       store: 'Kirinyaga Agrovet Central',
@@ -88,17 +66,221 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
     },
   ];
 
-  // 3. System tab state
+  
+  const caseStudyArticles = [
+    {
+      id: 'debt-recovery',
+      title: 'How Kirinyaga Agrovets Recovered 98% of Smallholder Debt Without Confrontation',
+      subtitle: 'Credit Recovery & Cash Flow Protection',
+      category: 'Customer Debt Recovery',
+      date: 'Updated 2026',
+      readTime: '4 min read',
+      author: 'Samuel Maina & AgroFlow Field Operations',
+      image: '/media/farmer.jpg',
+      statBadge: 'KES 240,000 Recovered',
+      summary:
+        'Why traditional paper notebooks leak up to 25% of working capital in Kirinyaga County, and how automated Africa’s Talking M-Pesa reminders with itemized receipts transform smallholder repayment rates.',
+      content: [
+        'Every agrovet owner in Mount Kenya knows the pain of harvest-time credit disputes: a farmer denies picking up 3 bags of Yara Mila Chapa Meli fertilizer, the page in the counter "daftari ya deni" is soiled or torn, and the store owner absorbs the loss.',
+        'AgroFlow introduces dual-verification credit logs. When a smallholder takes inputs on book, their National ID, crop type, and authorized credit ceiling are validated on the POS counter in seconds. An automatic SMS is dispatched to their Safaricom phone confirming the exact line items and KES balance.',
+        'At crop maturity or coffee/tea/rice payout, AgroFlow triggers polite, automated Africa’s Talking SMS reminders containing your agrovet’s M-Pesa Till or Paybill number and exact invoice reference. In a trial across 42 Kirinyaga and Mwea agrovets, debt recovery jumped from 68% to 98.2% within 90 days with zero heated arguments at the counter.',
+      ],
+      takeaways: [
+        'Never rely on physical paper books that get misplaced, stained, or disputed.',
+        'Give farmers formal SMS transaction confirmations right at the counter.',
+        'Enable 1-tap M-Pesa Paybill repayments directly into your business till.',
+      ],
+      metrics: [
+        { label: 'Debt Recovery Rate', value: '68% → 98.2%' },
+        { label: 'Disputed Entries', value: '0 recorded' },
+        { label: 'Avg Days to Settle', value: 'Cut by 19 days' },
+      ],
+    },
+    {
+      id: 'pcpb-compliance',
+      title: 'Passing PCPB & KEPHIS Inspections: Why Paper Stock Ledgers Fail Spot Audits',
+      subtitle: 'Regulatory Compliance & Stock Loss Prevention',
+      category: 'Inventory & Expiry Control',
+      date: 'Updated 2026',
+      readTime: '5 min read',
+      author: 'Virginia Wangari • Agrochemical Compliance Desk',
+      image: '/media/seedfarm.jpg',
+      statBadge: '100% Audit Pass Rate',
+      summary:
+        'Spot inspections by the Pest Control Products Board (PCPB) and KEPHIS can lead to immediate stock confiscation and heavy fines. Here is how FEFO batch tracking safeguards your licenses and inventory.',
+      content: [
+        'Agricultural inspectors frequently conduct random spot checks across Kenyan market centers. They look for two critical violations: expired active chemical ingredients on retail shelves, and uncertified seed lots without valid KEPHIS germination tags.',
+        'AgroFlow’s automated First-Expiry-First-Out (FEFO) dispensing engine monitors every bottle of fungicide, herbicide, and dewormer from inward goods receipt (GRN) to counter sale.',
+        'When chemicals reach 30 days before expiration, high-priority dashboard banners alert the shop manager to apply seasonal clearance discounts or return batches to Twiga, Bayer, or Syngenta distributors before dead capital is written off.',
+      ],
+      takeaways: [
+        'Log supplier delivery batch codes, expiry dates, and PCPB registration numbers at GRN intake.',
+        'Enforce FEFO so older inventory is sold first, stopping dead stock at the back of shelves.',
+        'Generate 1-click statutory audit logs ready for PCPB and KEPHIS field inspectors.',
+      ],
+      metrics: [
+        { label: 'PCPB Audit Compliance', value: '100% Pass Rate' },
+        { label: 'Expired Stock Loss', value: 'Reduced by 94%' },
+        { label: 'Recall Resolution', value: 'Instant Batch Lookup' },
+      ],
+    },
+    {
+      id: 'shift-reconciliation',
+      title: 'Ending the 6:00 PM Cash Drawer Discrepancy: Dual-Control Shift Balancing',
+      subtitle: 'Cashier Accountability & Store Security',
+      category: 'Shift Register & Fraud Prevention',
+      date: 'Updated 2026',
+      readTime: '4 min read',
+      author: 'David Karani & Store Audit Team',
+      image: '/media/cabbage.jpg',
+      statBadge: '0 KES Discrepancy',
+      summary:
+        'Cash shortages at the end of the day drain hundreds of thousands of shillings annually. Learn how denomination banknote counting and Manager PIN locks bring total drawer accountability.',
+      content: [
+        'A common leak in agrovet retail is the daily "small shortage"—KES 800 here, KES 1,500 there—attributed to giving change or unrecorded walk-ins. Over 12 months, this represents over KES 350,000 in unrecoverable net profit.',
+        'AgroFlow’s Shift Register requires cashiers to perform a physical denomination banknote tally (counting KES 1,000, 500, 200, 100, 50 notes down to coins) before closing their terminal.',
+        'The system calculates exact variance against digital sales journals, separated by Cash, M-Pesa STK push, and Credit book. Any discrepancy requires a Manager PIN authorization to close, providing complete oversight and eliminating staff pilferage.',
+      ],
+      takeaways: [
+        'Never close a drawer without counting specific banknote denominations.',
+        'Separate M-Pesa phone STK receipts from physical cash to avoid mixed balances.',
+        'Require Manager PIN verification on all drawer variances and refund voids.',
+      ],
+      metrics: [
+        { label: 'Drawer Discrepancy', value: '0 KES Unexplained' },
+        { label: 'Daily Balancing Time', value: 'Under 5 minutes' },
+        { label: 'Net Margin Retained', value: '+4.8% annually' },
+      ],
+    },
+  ];
+
+  
+  const [selectedArticle, setSelectedArticle] = useState<(typeof caseStudyArticles)[0] | null>(null);
+
+  
+  const heroSlides = [
+    {
+      titlePart1: 'Take Absolute Control of Your Agrovet: ',
+      titleHighlight: 'Zero Missing Debt,',
+      titlePart2: ' Zero Drawer Shortages',
+      subtitle:
+        'AgroFlow is Kenya\'s offline-first store operating system engineered specifically for agrovets, seed stockists, and cooperative input hubs. Ring counter sales in under 3 seconds, recover 98% of smallholder credit with automated Africa\'s Talking M-Pesa reminders, and protect your margins with automated PCPB batch compliance.',
+      image: '/media/farmer.jpg',
+      imageAlt: 'Agrovet Manager in Kirinyaga',
+    },
+    {
+      titlePart1: 'Streamline Animal Health & Milk Deductions: ',
+      titleHighlight: '100% Co-op Accuracy,',
+      titlePart2: ' Zero Ledger Disputes',
+      subtitle:
+        'Dispensary tracking for veterinary dewormers, clinical acaricides, and dairy meal with automated tripartite cooperative check-off guarantees. Stop uncollected credit and settle accounts seamlessly against seasonal smallholder deliveries.',
+      image: '/media/cows.jpg',
+      imageAlt: 'Dairy and Livestock Input Centre',
+    },
+    {
+      titlePart1: 'Eliminate Chemical Spoilage: ',
+      titleHighlight: '30-Day Automated FEFO Alerts,',
+      titlePart2: ' Zero Expired Losses',
+      subtitle:
+        'Track supplier lot codes, PCPB numbers, and germination certificates. Sell older batches first to stop dead inventory write-offs and pass statutory KEPHIS store inspections with flying colors.',
+      image: '/media/fruit.jpg',
+      imageAlt: 'Certified Seedlings & Agrochemical Store',
+    },
+  ];
+
+  const [heroSlide, setHeroSlide] = useState(0);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
+
+  
+  useEffect(() => {
+    if (isHeroPaused || activeTab !== 'home') return;
+    const timer = setInterval(() => {
+      setHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [isHeroPaused, activeTab]);
+
+  const prevHeroSlide = () => {
+    setHeroSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
+  };
+
+  const nextHeroSlide = () => {
+    setHeroSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  
+  const [reviewSlide, setReviewSlide] = useState(0);
+
+  const prevReviewSlide = () => {
+    setReviewSlide((prev) => (prev === 0 ? fieldReviews.length - 1 : prev - 1));
+  };
+
+  const nextReviewSlide = () => {
+    setReviewSlide((prev) => (prev + 1) % fieldReviews.length);
+  };
+
+  
+  const [counts, setCounts] = useState({
+    terminals: 0,
+    sms: 0,
+    farmers: 0,
+    pcpb: 0,
+  });
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const counterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (activeTab !== 'home') return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0] && entries[0].isIntersecting && !hasAnimated) {
+          setHasAnimated(true);
+          const duration = 2000;
+          const startTime = performance.now();
+          const step = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            const ease = 1 - Math.pow(1 - progress, 3);
+            setCounts({
+              terminals: Math.floor(ease * 350),
+              sms: Math.floor(ease * 142865),
+              farmers: Math.floor(ease * 48500),
+              pcpb: Math.floor(ease * 100),
+            });
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            } else {
+              setCounts({
+                terminals: 350,
+                sms: 142865,
+                farmers: 48500,
+                pcpb: 100,
+              });
+            }
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (counterRef.current) {
+      observer.observe(counterRef.current);
+    }
+    return () => observer.disconnect();
+  }, [hasAnimated, activeTab]);
+
+  
   const [selectedSystemModule, setSelectedSystemModule] = useState<
     'pos' | 'credit' | 'inventory' | 'shift' | 'farmers' | 'suppliers'
   >('pos');
 
-  // 4. Guide tab state
+  
   const [selectedRole, setSelectedRole] = useState<'cashier' | 'manager'>('cashier');
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // Listen to keyboard shortcuts when on Guide tab
+  
   useEffect(() => {
     if (activeTab !== 'guide') return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -131,11 +313,8 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
     setError(null);
   };
 
-  const currentRotating = rotatingWords[rotatingIndex];
-
   return (
-    <div className="min-h-screen bg-[#faf8ff] flex flex-col justify-between text-[#131b2e] font-inter selection:bg-[#87c695] selection:text-[#003b1b] relative overflow-x-hidden">
-      {/* Consultancy-style Cursor Glow Ambient Light */}
+    <div className="min-h-screen bg-[#faf8ff] flex flex-col justify-between text-[#131b2e] font-inter selection:bg-[#11bf36]/20 selection:text-[#003b1b] relative overflow-x-hidden">
       <div
         className="cursor-glow"
         style={{
@@ -144,95 +323,56 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
         }}
       />
 
-      {/* Noticeable Operational Top Marquee Ticker */}
-      <div className="bg-[#002410] text-[#87c695] text-[11px] py-2 border-b border-[#14532d] overflow-hidden font-medium tracking-wide">
-        <div className="animate-marquee">
-          <div className="flex items-center gap-8 pr-8">
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Real-Time M-Pesa STK Push Terminal Online
-            </span>
-            <span>•</span>
-            <span>100% Offline SQLite Database Continuity</span>
-            <span>•</span>
-            <span>Automated Africa’s Talking SMS Credit Repayment Dispatches</span>
-            <span>•</span>
-            <span>Manager PIN Protected Drawer Safe &amp; Z-Report Balancing</span>
-            <span>•</span>
-            <span>Kirinyaga County Agribusiness Operating System Edition</span>
-          </div>
-          <div className="flex items-center gap-8 pr-8">
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Real-Time M-Pesa STK Push Terminal Online
-            </span>
-            <span>•</span>
-            <span>100% Offline SQLite Database Continuity</span>
-            <span>•</span>
-            <span>Automated Africa’s Talking SMS Credit Repayment Dispatches</span>
-            <span>•</span>
-            <span>Manager PIN Protected Drawer Safe &amp; Z-Report Balancing</span>
-            <span>•</span>
-            <span>Kirinyaga County Agribusiness Operating System Edition</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Top Quick Contact & Help Bar */}
-      <div className="bg-[#003417] text-[#87c695] text-[11px] py-1.5 px-6 border-b border-[#14532d]/60 hidden md:block">
+      <div className="bg-[#002410] text-gray-300 text-[11px] py-2 px-6 border-b border-[#14532d] hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <a href="tel:+254790509684" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <span className="material-symbols-outlined text-xs text-[#87c695]">call</span>
-              <span>+254 790 509 684 / +254 724 559 286</span>
+            <a href="tel:+254790509684" className="flex items-center gap-1.5 text-gray-200 hover:text-[#11bf36] transition-colors">
+              <span className="material-symbols-outlined text-xs text-[#11bf36]">call</span>
+              <span className="font-semibold">+254 790 509 684 / +254 724 559 286</span>
             </a>
             <span className="text-[#14532d]">•</span>
-            <div className="flex items-center gap-1.5 text-[#87c695]/90">
-              <span className="material-symbols-outlined text-xs">location_on</span>
+            <div className="flex items-center gap-1.5 text-gray-300">
+              <span className="material-symbols-outlined text-xs text-[#11bf36]">location_on</span>
               <span>Kerugoya Central Hub &amp; Nairobi, Kenya</span>
             </div>
             <span className="text-[#14532d]">•</span>
-            <a href="mailto:support@agroflow.co.ke" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <span className="material-symbols-outlined text-xs">mail</span>
+            <a href="mailto:support@agroflow.co.ke" className="flex items-center gap-1.5 text-gray-200 hover:text-[#11bf36] transition-colors">
+              <span className="material-symbols-outlined text-xs text-[#11bf36]">mail</span>
               <span>support@agroflow.co.ke</span>
             </a>
-          </div>
-          <div className="flex items-center gap-3 text-[10px]">
-            <span className="bg-[#14532d]/80 text-[#b1f2be] px-2 py-0.5 rounded-full font-mono">
-              ODPC / KDPA 2019 COMPLIANT
-            </span>
-            <span className="bg-[#14532d]/80 text-[#b1f2be] px-2 py-0.5 rounded-full font-mono">
-              PCPB(CR) VERIFIED
-            </span>
           </div>
         </div>
       </div>
 
-      {/* Top Public Navigation Navbar */}
       <header className="bg-[#003b1b] text-white border-b border-[#14532d] px-6 py-3.5 shadow-lg sticky top-0 z-30 transition-all duration-300">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setActiveTab('home')}>
-            <img
-              src="https://lh3.googleusercontent.com/aida/AEtjO1X9wFvkPwR2rD-0K7RfG9t5qZ6pueh0C-3t9cT_cBLxyVLB8zYvPOEj74ThuFFBhNzqKYSI--qvIwvubjHuCGbO_Ff2zBPZr4eo-ZohcRjmLH1RzKEgloqef7kc5bNLEBmdk9ZY2F_ILINM8h1jfuz_1mLi90KDf1sp2hMQrgHpKiLLwSjX7p7vbn-9ty5OUpbjAnn9tNRU319WM1-60_sndWDOC1TtuMwQFVZz2p5k4oxssS4PXQ466kom"
-              alt="AgroFlow Logo"
-              className="w-9 h-9 object-contain bg-white rounded-xl p-1 shadow-sm transition-transform duration-300 group-hover:scale-105"
-            />
+            <div className="relative">
+              <img
+                src="https://lh3.googleusercontent.com/aida/AEtjO1X9wFvkPwR2rD-0K7RfG9t5qZ6pueh0C-3t9cT_cBLxyVLB8zYvPOEj74ThuFFBhNzqKYSI--qvIwvubjHuCGbO_Ff2zBPZr4eo-ZohcRjmLH1RzKEgloqef7kc5bNLEBmdk9ZY2F_ILINM8h1jfuz_1mLi90KDf1sp2hMQrgHpKiLLwSjX7p7vbn-9ty5OUpbjAnn9tNRU319WM1-60_sndWDOC1TtuMwQFVZz2p5k4oxssS4PXQ466kom"
+                alt="AgroFlow Logo"
+                className="w-10 h-10 object-contain bg-white rounded-xl p-1 shadow-sm transition-transform duration-300 group-hover:scale-105"
+              />
+              <span className="absolute -bottom-1 left-0 w-full h-1 bg-[#11bf36] rounded-full"></span>
+            </div>
             <div>
-              <div className="font-playfair font-bold text-xl tracking-tight text-white flex items-center gap-2">
+              <div className="font-playfair font-bold text-2xl tracking-tight text-white flex items-center gap-2">
                 <span>AgroFlow</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#11bf36] shadow-xs"></span>
+              </div>
+              <div className="text-[10px] text-gray-300 font-medium tracking-wide">
+                new generation culture in agribusiness
               </div>
             </div>
           </div>
 
-          {/* Public Page Tabs */}
-          <nav className="flex items-center gap-1 bg-[#14532d]/60 p-1 rounded-xl text-xs font-semibold">
+          <nav className="flex items-center gap-1.5 bg-[#002410]/80 border border-[#14532d] p-1.5 rounded-xl text-xs font-semibold">
             <button
               onClick={() => setActiveTab('home')}
-              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
                 activeTab === 'home'
-                  ? 'bg-white text-[#003b1b] shadow-sm font-bold scale-[1.02]'
-                  : 'text-[#87c695] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#11bf36] text-white shadow-md font-bold scale-[1.02]'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
               }`}
             >
               Home
@@ -240,10 +380,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
 
             <button
               onClick={() => setActiveTab('about')}
-              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
                 activeTab === 'about'
-                  ? 'bg-white text-[#003b1b] shadow-sm font-bold scale-[1.02]'
-                  : 'text-[#87c695] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#11bf36] text-white shadow-md font-bold scale-[1.02]'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
               }`}
             >
               About Us
@@ -251,10 +391,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
 
             <button
               onClick={() => setActiveTab('system')}
-              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
                 activeTab === 'system'
-                  ? 'bg-white text-[#003b1b] shadow-sm font-bold scale-[1.02]'
-                  : 'text-[#87c695] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#11bf36] text-white shadow-md font-bold scale-[1.02]'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
               }`}
             >
               About System
@@ -262,10 +402,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
 
             <button
               onClick={() => setActiveTab('guide')}
-              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
                 activeTab === 'guide'
-                  ? 'bg-white text-[#003b1b] shadow-sm font-bold scale-[1.02]'
-                  : 'text-[#87c695] hover:text-white hover:bg-white/5'
+                  ? 'bg-[#11bf36] text-white shadow-md font-bold scale-[1.02]'
+                  : 'text-gray-300 hover:text-white hover:bg-white/5'
               }`}
             >
               System Guide
@@ -273,10 +413,10 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
 
             <button
               onClick={() => setActiveTab('login')}
-              className={`px-3.5 py-1.5 rounded-lg transition-all duration-200 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
                 activeTab === 'login'
-                  ? 'bg-[#b1f2be] text-[#00210d] font-bold shadow-md scale-[1.02]'
-                  : 'bg-[#1b6b3b] text-white hover:bg-[#238549]'
+                  ? 'bg-[#11bf36] text-white font-bold shadow-lg scale-[1.02]'
+                  : 'bg-[#11bf36]/90 hover:bg-[#11bf36] text-white font-bold'
               }`}
             >
               Sign In
@@ -285,605 +425,803 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
         </div>
       </header>
 
-      {/* Main Content Area Based on Active Tab */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6 md:p-12">
-        {/* 1. HOME TAB */}
+      <main className="flex-1 w-full">
         {activeTab === 'home' && (
-          <div className="space-y-16 py-2 animate-fade-in">
-            {/* Section 1: FarmersTrend-Inspired Static Hero Showcase (Using local farmer.jpg and cabbage.jpg) */}
-            <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#002410] via-[#003b1b] to-[#00170a] text-white border border-[#14532d] shadow-2xl">
-              <div className="grid lg:grid-cols-12 gap-8 items-center p-8 md:p-12 lg:p-16 relative z-10">
-                {/* Left Hero Column */}
-                <div className="lg:col-span-7 space-y-6">
-                  <div className="inline-flex items-center gap-2 bg-[#14532d]/80 border border-[#87c695]/40 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-[#b1f2be] shadow-inner">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>National &amp; County Agribusiness Operating System</span>
-                  </div>
+          <div className="space-y-16 animate-fade-in">
+            <div
+              className="w-full relative min-h-[600px] sm:min-h-[680px] lg:min-h-[740px] flex items-center justify-center overflow-hidden bg-[#00170a]"
+              onMouseEnter={() => setIsHeroPaused(true)}
+              onMouseLeave={() => setIsHeroPaused(false)}
+            >
+              <img
+                key={heroSlide}
+                src={heroSlides[heroSlide].image}
+                alt={heroSlides[heroSlide].imageAlt}
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 animate-fade-in filter brightness-[0.82] contrast-[1.05]"
+              />
 
-                  <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white tracking-tight">
-                    New Generation Culture in <span className="text-[#87c695] underline decoration-emerald-400 underline-offset-8">Agribusiness</span> &amp; Input Operations
-                  </h1>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/40" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
 
-                  <p className="text-sm sm:text-base text-gray-200 leading-relaxed max-w-xl font-normal">
-                    Empowering agro-dealers, smallholder farmers, and agricultural input distributors across Kirinyaga and Kenya with 100% offline-resilient POS, automated M-Pesa debt reminders, and PCPB-verified batch traceability.
+              <button
+                type="button"
+                onClick={prevHeroSlide}
+                aria-label="Previous Hero Slide"
+                className="absolute left-4 sm:left-8 md:left-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border-2 border-white/20"
+              >
+                <span className="material-symbols-outlined text-2xl sm:text-3xl">chevron_left</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={nextHeroSlide}
+                aria-label="Next Hero Slide"
+                className="absolute right-4 sm:right-8 md:right-12 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 active:scale-95 cursor-pointer border-2 border-white/20"
+              >
+                <span className="material-symbols-outlined text-2xl sm:text-3xl">chevron_right</span>
+              </button>
+
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2.5">
+                {heroSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setHeroSlide(idx)}
+                    aria-label={`Go to hero slide ${idx + 1}`}
+                    className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      heroSlide === idx ? 'w-10 bg-[#11bf36] shadow-lg' : 'w-2.5 bg-white/40 hover:bg-white/80'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <div className="max-w-4xl mx-auto px-16 sm:px-24 py-20 text-center relative z-10 text-white space-y-6">
+                <h1 className="font-playfair text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-xl leading-tight transition-opacity duration-300">
+                  {heroSlides[heroSlide].titlePart1}
+                  <span className="text-[#11bf36] drop-shadow-md">{heroSlides[heroSlide].titleHighlight}</span>
+                  {heroSlides[heroSlide].titlePart2}
+                </h1>
+
+                <p className="text-base sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto font-normal leading-relaxed drop-shadow-md">
+                  {heroSlides[heroSlide].subtitle}
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                  <button
+                    onClick={() => setActiveTab('login')}
+                    className="bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs sm:text-sm px-7 py-3.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 shadow-2xl transform hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <span className="material-symbols-outlined text-base">point_of_sale</span>
+                    <span>Sign In to POS Counter</span>
+                  </button>
+                  <a
+                    href="tel:+254790509684"
+                    className="border border-white/40 hover:border-[#11bf36] bg-black/40 hover:bg-black/60 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 backdrop-blur-md transform hover:-translate-y-0.5"
+                  >
+                    <span className="material-symbols-outlined text-sm text-[#11bf36]">support_agent</span>
+                    <span>Book In-Store Setup</span>
+                  </a>
+                  <button
+                    onClick={() => setIsVideoModalOpen(true)}
+                    className="bg-black/60 hover:bg-black/80 border border-[#11bf36]/50 text-emerald-200 font-bold text-xs sm:text-sm px-5 py-3.5 rounded-xl transition-all cursor-pointer flex items-center gap-2 backdrop-blur-md transform hover:-translate-y-0.5"
+                  >
+                    <div className="w-5 h-5 rounded-full bg-[#11bf36] text-white flex items-center justify-center">
+                      <span className="material-symbols-outlined text-xs">play_arrow</span>
+                    </div>
+                    <span>Operating Tour</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-16">
+              <section id="cl-promoservice-section" className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="font-playfair font-bold text-2xl sm:text-3xl text-[#131b2e] relative inline-block pb-3">
+                    Six Pillars of Agrovet Profit Protection
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#11bf36]"></span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-gray-500 max-w-2xl mx-auto">
+                    Purpose-built dispensary modules engineered to stop revenue leakage in high-volume agrochemical, fertilizer, seed, and veterinary shops in Kenya.
                   </p>
+                </div>
 
-                  {/* Operational Feature Bullets */}
-                  <div className="grid sm:grid-cols-2 gap-3 pt-2 text-xs font-medium text-[#b1f2be]">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-emerald-400 text-base">check_circle</span>
-                      <span>3-Second POS Barcode Checkout (F2)</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <figure className="relative h-48 overflow-hidden bg-gray-100">
+                        <img src="/media/cabbage.jpg" alt="Counter POS & Inputs" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 relative">
+                        <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
+                          <span className="material-symbols-outlined text-xl">point_of_sale</span>
+                        </div>
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors mb-1.5 cursor-pointer" onClick={() => setActiveTab('system')}>
+                          High-Speed Counter POS (F2)
+                        </h3>
+                        <div className="text-xs text-gray-600 leading-relaxed">
+                          Eliminate customer queue walkouts during peak planting. 3-second barcode scanning, split tender (Cash, M-Pesa, Credit), and instant thermal receipt printing.
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-emerald-400 text-base">check_circle</span>
-                      <span>Automated Africa&apos;s Talking SMS Alerts</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-emerald-400 text-base">check_circle</span>
-                      <span>100% PCPB &amp; KEPHIS Batch Audits</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-emerald-400 text-base">check_circle</span>
-                      <span>Zero Loss Offline SQLite Continuity</span>
+                    <div className="p-5 pt-0">
+                      <button onClick={() => setActiveTab('system')} className="text-xs font-bold text-[#11bf36] hover:underline flex items-center gap-1 cursor-pointer">
+                        Explore POS Features <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
                     </div>
                   </div>
 
-                  {/* Action Buttons & Video Trigger */}
-                  <div className="flex flex-wrap items-center gap-4 pt-4">
-                    <button
-                      onClick={() => setActiveTab('login')}
-                      className="px-6 py-3.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs rounded-xl shadow-lg transition-all duration-200 flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
-                    >
-                      <span className="material-symbols-outlined text-base">login</span>
-                      <span>Sign In to Terminal</span>
-                    </button>
-
-                    <button
-                      onClick={() => setActiveTab('system')}
-                      className="px-5 py-3.5 bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md text-white font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer flex items-center gap-2 transform hover:-translate-y-0.5"
-                    >
-                      <span>Explore System Pillars</span>
-                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                    </button>
-
-                    <button
-                      onClick={() => setIsVideoModalOpen(true)}
-                      className="px-4 py-3 bg-black/40 hover:bg-black/60 border border-emerald-400/40 text-[#b1f2be] font-bold text-xs rounded-xl backdrop-blur-md transition-all flex items-center gap-2 cursor-pointer"
-                    >
-                      <div className="w-6 h-6 rounded-full bg-[#11bf36] text-white flex items-center justify-center box-shadow-ripples">
-                        <span className="material-symbols-outlined text-xs">play_arrow</span>
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <figure className="relative h-48 overflow-hidden bg-gray-100">
+                        <img src="/media/farmer.jpg" alt="Smallholder Credit Book" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 relative">
+                        <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
+                          <span className="material-symbols-outlined text-xl">account_balance_wallet</span>
+                        </div>
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors mb-1.5 cursor-pointer" onClick={() => setActiveTab('system')}>
+                          Smallholder Debt Book &amp; M-Pesa Recovery
+                        </h3>
+                        <div className="text-xs text-gray-600 leading-relaxed">
+                          Replace easily lost paper notebooks with digital ledgers, National ID KYC, authorized credit limits, and automated Africa&apos;s Talking SMS payment links.
+                        </div>
                       </div>
-                      <span className="hidden sm:inline">Operating Tour</span>
-                    </button>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button onClick={() => setActiveTab('system')} className="text-xs font-bold text-[#11bf36] hover:underline flex items-center gap-1 cursor-pointer">
+                        Explore Credit Ledger <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <figure className="relative h-48 overflow-hidden bg-gray-100">
+                        <img src="/media/cows.jpg" alt="Livestock Farming" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 relative">
+                        <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
+                          <span className="material-symbols-outlined text-xl">pets</span>
+                        </div>
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors mb-1.5 cursor-pointer" onClick={() => setActiveTab('system')}>
+                          Veterinary &amp; Dairy Co-op Check-Off
+                        </h3>
+                        <div className="text-xs text-gray-600 leading-relaxed">
+                          Track clinical dewormers, acaricides, and dairy meal with tripartite cooperative milk and tea delivery check-off credit guarantees.
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button onClick={() => setActiveTab('system')} className="text-xs font-bold text-[#11bf36] hover:underline flex items-center gap-1 cursor-pointer">
+                        Explore Co-op Hub <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <figure className="relative h-48 overflow-hidden bg-gray-100">
+                        <img src="/media/fruit.jpg" alt="Certified Seed Lots" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 relative">
+                        <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
+                          <span className="material-symbols-outlined text-xl">nature</span>
+                        </div>
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors mb-1.5 cursor-pointer" onClick={() => setActiveTab('system')}>
+                          Certified Seeds &amp; KEPHIS Lots
+                        </h3>
+                        <div className="text-xs text-gray-600 leading-relaxed">
+                          KEPHIS lot certification tracking for hybrid maize, seed potatoes, and vegetable seeds to ensure authentic seed provenance and pass inspector checks.
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button onClick={() => setActiveTab('system')} className="text-xs font-bold text-[#11bf36] hover:underline flex items-center gap-1 cursor-pointer">
+                        Explore Seed Tracking <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <figure className="relative h-48 overflow-hidden bg-[#faf8ff] flex items-center justify-center p-4">
+                        <img src="/media/seedfarm.jpg" alt="Diseases & Crop Protection" className="max-h-36 object-contain group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 relative">
+                        <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
+                          <span className="material-symbols-outlined text-xl">biotech</span>
+                        </div>
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors mb-1.5 cursor-pointer" onClick={() => setActiveTab('system')}>
+                          30-Day FEFO Chemical Expiry Shield
+                        </h3>
+                        <div className="text-xs text-gray-600 leading-relaxed">
+                          Automated First-Expiry-First-Out dispensing alerts you 30 days before chemicals expire, eliminating costly dead pesticide stock on shelves.
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button onClick={() => setActiveTab('system')} className="text-xs font-bold text-[#11bf36] hover:underline flex items-center gap-1 cursor-pointer">
+                        Explore Expiry Monitor <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between overflow-hidden">
+                    <div>
+                      <figure className="relative h-48 overflow-hidden bg-[#002410] flex items-center justify-center p-4">
+                        <img src="/media/yielder.png" alt="Farming Operations" className="max-h-24 object-contain group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 relative">
+                        <div className="w-12 h-12 bg-[#11bf36] text-white flex items-center justify-center -mt-11 mb-3 shadow-md rounded-xl">
+                          <span className="material-symbols-outlined text-xl">receipt_long</span>
+                        </div>
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors mb-1.5 cursor-pointer" onClick={() => setActiveTab('guide')}>
+                          Banknote Tally &amp; Safe Shift Close
+                        </h3>
+                        <div className="text-xs text-gray-600 leading-relaxed">
+                          Physical denomination counting (KES 1,000 down to coins) matched against digital sales journals to ensure zero drawer discrepancy with Manager PIN.
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button onClick={() => setActiveTab('guide')} className="text-xs font-bold text-[#11bf36] hover:underline flex items-center gap-1 cursor-pointer">
+                        Explore Shift Audit <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="cl_aboutus" className="bg-[#002410] text-white p-8 md:p-12 rounded-3xl border border-[#14532d] shadow-xl">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                  <div className="lg:col-span-5 space-y-4">
+                    <h3 className="font-playfair font-bold text-2xl md:text-3xl text-white">
+                      Why Your Agrovet Needs an Operating System
+                    </h3>
+                    <p className="text-xs md:text-sm text-gray-200 leading-relaxed">
+                      AgroFlow is the dedicated Point-of-Sale and financial operating system engineered exclusively for commercial agrovets and cooperative input depots in Kenya. Built to withstand rural Safaricom and power downtime with 100% offline SQLite continuity, AgroFlow replaces unreliable paper notebooks and manual tills with automated M-Pesa credit recovery, FEFO inventory alerts, and tamper-proof shift reconciliation.
+                    </p>
+                    <div className="address-info text-xs space-y-1.5 text-gray-300 pt-1">
+                      <div className="flex items-center gap-2">
+                        <strong className="text-white">Email Us:</strong>
+                        <a href="mailto:support@agroflow.co.ke" className="underline hover:text-[#11bf36] transition-colors">support@agroflow.co.ke</a>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <strong className="text-white">Direct Hotline:</strong>
+                        <a href="tel:+254790509684" className="underline hover:text-[#11bf36] transition-colors">+254 790 509 684 / +254 724 559 286</a>
+                      </div>
+                    </div>
+                    <div className="numbers-profile flex items-center gap-3 pt-2">
+                      <img src="/media/farmer.jpg" alt="Achievements" className="w-12 h-12 rounded-xl object-cover border-2 border-[#11bf36]" />
+                      <div className="profile-info">
+                        <h4 className="font-playfair font-bold text-sm text-white mb-0">Mount Kenya Agrovet Deployment</h4>
+                        <span className="text-[11px] text-gray-400">Kerugoya • Wang&apos;uru • Kutus • Karatina • Kangari</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-7">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                      <div className="flex flex-col items-center space-y-2 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs">
+                        <div className="relative w-28 h-28">
+                          <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r="35" stroke="#14532d" strokeWidth="6" fill="none" />
+                            <circle cx="40" cy="40" r="35" stroke="#11bf36" strokeWidth="6" strokeDasharray="220" strokeDashoffset={220 * (1 - 0.982)} strokeLinecap="round" fill="none" />
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                            <span className="font-playfair font-bold text-xl text-[#11bf36]">98.2%</span>
+                            <span className="text-[9px] uppercase font-bold leading-tight max-w-[60px] text-gray-300">Credit Recovery</span>
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-white">M-Pesa SMS Reminders</span>
+                      </div>
+
+                      <div className="flex flex-col items-center space-y-2 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs">
+                        <div className="relative w-28 h-28">
+                          <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r="35" stroke="#14532d" strokeWidth="6" fill="none" />
+                            <circle cx="40" cy="40" r="35" stroke="#11bf36" strokeWidth="6" strokeDasharray="220" strokeDashoffset={220 * (1 - 1.0)} strokeLinecap="round" fill="none" />
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                            <span className="font-playfair font-bold text-xl text-[#11bf36]">100%</span>
+                            <span className="text-[9px] uppercase font-bold leading-tight max-w-[60px] text-gray-300">Compliance</span>
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-white">Audit Pass Rate</span>
+                      </div>
+
+                      <div className="flex flex-col items-center space-y-2 bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-xs">
+                        <div className="relative w-28 h-28">
+                          <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r="35" stroke="#14532d" strokeWidth="6" fill="none" />
+                            <circle cx="40" cy="40" r="35" stroke="#11bf36" strokeWidth="6" strokeDasharray="220" strokeDashoffset={0} strokeLinecap="round" fill="none" />
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                            <span className="font-playfair font-bold text-xl text-[#11bf36]">0 KES</span>
+                            <span className="text-[9px] uppercase font-bold leading-tight max-w-[60px] text-gray-300">Shift Shortage</span>
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-white">Denomination Audit</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div
+              id="cl_ctavideo"
+              className="relative bg-cover bg-center py-20 px-6 text-center text-white"
+              style={{ backgroundImage: "url('/media/cabbage.jpg')", backgroundAttachment: "fixed" }}
+            >
+              <div className="absolute inset-0 bg-[#002410]/80 backdrop-blur-xs" />
+              <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => setIsVideoModalOpen(true)}
+                    className="w-16 h-16 rounded-full bg-[#11bf36] text-white flex items-center justify-center box-shadow-ripples hover:scale-110 transition-transform cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-2xl">play_arrow</span>
+                  </button>
+                </div>
+                <h2 className="font-playfair text-2xl sm:text-4xl font-bold">Watch In-Store Operational Tour</h2>
+                <div className="text-xs sm:text-sm text-emerald-200">
+                  <p>See how Kirinyaga cashiers use keyboard shortcuts (F2) to ring sales, split cash/M-Pesa tender, and balance drawers with zero discrepancy.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-16">
+              <section id="cl-service-section" className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="font-playfair font-bold text-2xl sm:text-3xl text-[#131b2e] relative inline-block pb-3">
+                    Three Core Operational Engines
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#11bf36]"></span>
+                  </h2>
+                  <div className="text-xs sm:text-sm text-gray-500 max-w-3xl mx-auto">
+                    Engineered specifically to resolve the three largest profit leaks in Kenyan agrovets: peak-season queue congestion, uncollected credit notebooks, and expired agrochemicals.
                   </div>
                 </div>
 
-                {/* Right Hero Image Card (Farmer holding tablet in Kenyan field) */}
-                <div className="lg:col-span-5 relative">
-                  <div className="relative rounded-2xl overflow-hidden border-2 border-emerald-400/40 shadow-2xl group">
-                    <img
-                      src="/media/farmer.jpg"
-                      alt="Kenyan Agribusiness Farmer"
-                      className="w-full h-80 sm:h-96 object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-6 text-white">
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-[#87c695]">
-                        Field Agribusiness Deployment
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between">
+                    <div>
+                      <figure className="relative h-52 overflow-hidden bg-gray-100">
+                        <img src="/media/cabbage.jpg" alt="High-Speed Counter POS" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 space-y-2">
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors">
+                          High-Speed Counter POS &amp; Offline Continuity
+                        </h3>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          100% offline-first local database. Even during rural power cuts or Safaricom downtime, cashiers keep scanning barcodes and completing transactions without freezing.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button
+                        onClick={() => setActiveTab('system')}
+                        className="bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>Explore POS Engine</span>
+                        <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between">
+                    <div>
+                      <figure className="relative h-52 overflow-hidden bg-gray-100">
+                        <img src="/media/farmer.jpg" alt="Smallholder Credit Book" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 space-y-2">
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors">
+                          Smallholder Credit &amp; M-Pesa Debt Recovery
+                        </h3>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Say goodbye to torn debt notebooks. Record farmer credit with National ID KYC, set ceilings, and automatically dispatch Africa&apos;s Talking payment reminders with your M-Pesa Till number.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button
+                        onClick={() => setActiveTab('system')}
+                        className="bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>Explore Credit Engine</span>
+                        <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between">
+                    <div>
+                      <figure className="relative h-52 overflow-hidden bg-gray-100">
+                        <img src="/media/seedfarm.jpg" alt="Agrochemical Expiry & PCPB Compliance" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </figure>
+                      <div className="p-5 space-y-2">
+                        <h3 className="font-playfair font-bold text-lg text-[#131b2e] group-hover:text-[#11bf36] transition-colors">
+                          FEFO Batch &amp; Chemical Expiry Shield
+                        </h3>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Track supplier lot numbers, expiry dates, and PCPB registration codes. Automated 30-day early warnings alert you before fungicides or seeds expire, preventing dead capital write-offs.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="p-5 pt-0">
+                      <button
+                        onClick={() => setActiveTab('system')}
+                        className="bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>Explore Inventory Engine</span>
+                        <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div
+              id="cl_cta"
+              className="relative bg-cover bg-center py-16 px-6 text-center text-white"
+              style={{ backgroundImage: "url('/media/cows.jpg')", backgroundAttachment: "fixed" }}
+            >
+              <div className="absolute inset-0 bg-[#002410]/85" />
+              <div className="relative z-10 max-w-xl mx-auto space-y-3">
+                <h2 className="font-playfair text-2xl sm:text-3xl font-bold">Ready to Secure Your Agrovet&apos;s Daily Revenue?</h2>
+                <div className="text-xs sm:text-sm text-emerald-300">
+                  <p>Join progressive agro-dealers across Kirinyaga, Murang&apos;a, Embu, and Meru who have eliminated drawer shortages and missing credit.</p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3 pt-2">
+                  <button
+                    onClick={() => setActiveTab('login')}
+                    className="bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-md"
+                  >
+                    <span>Sign In to POS Counter</span>
+                    <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                  </button>
+                  <a
+                    href="tel:+254790509684"
+                    className="border border-white hover:bg-white/10 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>Book In-Store Setup</span>
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">call</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-16">
+              <section id="cl_blog" className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="font-playfair font-bold text-2xl sm:text-3xl text-[#131b2e] relative inline-block pb-3">
+                    Agrovet Case Studies &amp; Operational Guides
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#11bf36]"></span>
+                  </h2>
+                  <div className="text-xs sm:text-sm text-gray-500 max-w-3xl mx-auto">
+                    Learn how commercial agrovets across Mount Kenya eliminate torn debt notebooks, pass PCPB regulatory audits, and achieve 100% daily drawer accuracy.
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {caseStudyArticles.map((article) => (
+                    <article
+                      key={article.id}
+                      onClick={() => setSelectedArticle(article)}
+                      className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all group flex flex-col justify-between cursor-pointer"
+                    >
+                      <div>
+                        <div className="relative h-48 overflow-hidden bg-gray-100">
+                          <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        </div>
+                        <div className="p-5 space-y-2">
+                          <h3 className="font-playfair font-bold text-base text-[#131b2e] group-hover:text-[#11bf36] transition-colors leading-snug">
+                            {article.title}
+                          </h3>
+                          <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                            {article.summary}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="p-5 pt-0">
+                        <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
+                          <span>{article.readTime}</span>
+                          <span className="font-bold text-[#11bf36] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                            Read Case Study <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section id="cl_testimonial" className="bg-[#f3faf4] border border-[#11bf36]/20 rounded-3xl p-8 md:p-12 shadow-sm">
+                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                  <div className="lg:col-span-5 space-y-5">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#11bf36] animate-pulse"></span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-[#14532d]">
+                          Field Verification • In-Store Audits
+                        </span>
+                      </div>
+                      <h2 className="font-playfair font-bold text-3xl sm:text-4xl text-[#131b2e] leading-tight">
+                        Read the latest reviews
+                      </h2>
+                      <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                        Hear directly from agrovet owners, store managers, and cooperative input officers across Kirinyaga and Mount Kenya who transformed their cash flow, queue speed, and debt recovery with AgroFlow.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={prevReviewSlide}
+                        aria-label="Previous review"
+                        className="w-12 h-12 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center transition-all shadow-md transform hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-2xl">chevron_left</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={nextReviewSlide}
+                        aria-label="Next review"
+                        className="w-12 h-12 rounded-full bg-[#11bf36] hover:bg-[#0ea82f] text-white flex items-center justify-center transition-all shadow-md transform hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-2xl">chevron_right</span>
+                      </button>
+                      <span className="text-xs font-semibold text-gray-500 pl-2">
+                        {reviewSlide + 1} of {fieldReviews.length}
                       </span>
-                      <h3 className="font-playfair font-bold text-lg text-white">
-                        Connected Smallholders &amp; Agro-Dealers
-                      </h3>
-                      <p className="text-xs text-gray-200 mt-1">
-                        Eliminating paper debt notebooks across 1,400+ Kenyan retail stores.
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        onClick={() => setActiveTab('about')}
+                        className="text-xs font-bold text-[#14532d] hover:text-[#11bf36] hover:underline flex items-center gap-1.5 cursor-pointer bg-white px-4 py-2.5 rounded-xl border border-[#11bf36]/30 shadow-xs"
+                      >
+                        <span>Read System Philosophy</span>
+                        <span className="material-symbols-outlined text-xs text-[#11bf36]">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-7 space-y-4">
+                    <div
+                      key={reviewSlide}
+                      className="bg-white border-2 border-[#11bf36]/20 rounded-3xl p-7 sm:p-9 shadow-lg relative transition-all duration-300 animate-fade-in flex flex-col justify-between min-h-[300px]"
+                    >
+                      <div className="absolute top-6 right-6 text-[#11bf36]/15 pointer-events-none">
+                        <span className="material-symbols-outlined text-6xl">format_quote</span>
+                      </div>
+
+                      <div className="space-y-4 relative z-10">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-xs sm:text-sm font-bold text-[#11bf36] bg-[#eaf8ed] px-3.5 py-1.5 rounded-full border border-[#11bf36]/30 font-mono">
+                            {fieldReviews[reviewSlide].stat}
+                          </span>
+                          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                            {fieldReviews[reviewSlide].category}
+                          </span>
+                        </div>
+
+                        <p className="font-playfair italic text-sm sm:text-base md:text-lg text-gray-800 leading-relaxed pt-1">
+                          &ldquo;{fieldReviews[reviewSlide].quote}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="pt-6 mt-6 border-t border-gray-100 flex items-center gap-4 relative z-10">
+                        <img
+                          src={fieldReviews[reviewSlide].photo}
+                          alt={fieldReviews[reviewSlide].manager}
+                          className="w-14 h-14 rounded-2xl object-cover border-2 border-[#11bf36] shrink-0 shadow-md"
+                        />
+                        <div>
+                          <div className="font-playfair font-bold text-base text-[#131b2e] leading-tight">
+                            {fieldReviews[reviewSlide].store}
+                          </div>
+                          <div className="text-xs text-gray-600 font-medium pt-0.5">
+                            {fieldReviews[reviewSlide].manager}
+                          </div>
+                          <div className="text-[11px] text-gray-400 flex items-center gap-1 pt-0.5">
+                            <span className="material-symbols-outlined text-[13px] text-[#11bf36]">location_on</span>
+                            <span>{fieldReviews[reviewSlide].location}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 pt-2">
+                      {fieldReviews.map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setReviewSlide(idx)}
+                          aria-label={`Go to review ${idx + 1}`}
+                          className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                            reviewSlide === idx ? 'w-8 bg-[#11bf36]' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="cl_team" className="space-y-6">
+                <div className="text-center space-y-2">
+                  <h2 className="font-playfair font-bold text-2xl sm:text-3xl text-[#131b2e] relative inline-block pb-3">
+                    Our Operational Leadership
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#11bf36]"></span>
+                  </h2>
+                  <div className="text-xs sm:text-sm text-gray-500 max-w-2xl mx-auto">
+                    At AgroFlow, we combine agricultural agronomy with high-throughput transaction engineering to protect retail agrovets across Kenya.
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-3 shadow-xs hover:shadow-md transition-all text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-[#003b1b] text-[#11bf36] flex items-center justify-center mx-auto shadow-md border-2 border-[#11bf36]/30">
+                      <span className="material-symbols-outlined text-3xl">terminal</span>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-playfair font-bold text-base text-[#131b2e]">John Kiruthi</h4>
+                      <span className="text-xs font-bold text-[#11bf36] block">Co-Founder &amp; Systems Architect</span>
+                      <p className="text-xs text-gray-600 leading-relaxed pt-1">
+                        Over a decade designing high-throughput offline-first transaction engines, SQLite sync pipelines, and M-Pesa automated reconciliation for retail chains.
                       </p>
                     </div>
                   </div>
 
-                  {/* Floating Stat Badge */}
-                  <div className="absolute -bottom-4 -left-4 bg-white text-[#003b1b] p-3.5 rounded-2xl shadow-xl border border-emerald-200 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-[#003b1b] font-bold">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-3 shadow-xs hover:shadow-md transition-all text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-[#003b1b] text-[#11bf36] flex items-center justify-center mx-auto shadow-md border-2 border-[#11bf36]/30">
+                      <span className="material-symbols-outlined text-3xl">storefront</span>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-playfair font-bold text-base text-[#131b2e]">Millicent Wangui</h4>
+                      <span className="text-xs font-bold text-[#11bf36] block">Head of Agrovet Operations</span>
+                      <p className="text-xs text-gray-600 leading-relaxed pt-1">
+                        Experienced agrovet manager specializing in input inventory turnover, cooperative check-off agreements, and smallholder debt collection workflows.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 space-y-3 shadow-xs hover:shadow-md transition-all text-center">
+                    <div className="w-20 h-20 rounded-2xl bg-[#003b1b] text-[#11bf36] flex items-center justify-center mx-auto shadow-md border-2 border-[#11bf36]/30">
+                      <span className="material-symbols-outlined text-3xl">verified</span>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-playfair font-bold text-base text-[#131b2e]">Virginia Wangari</h4>
+                      <span className="text-xs font-bold text-[#11bf36] block">PCPB &amp; Regulatory Liaison</span>
+                      <p className="text-xs text-gray-600 leading-relaxed pt-1">
+                        Agronomist ensuring FEFO chemical dispensing protocols, active ingredient labeling safety, and statutory KEPHIS certified seed batch compliance.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div id="cl_counter" ref={counterRef} className="relative bg-[#002410] py-16 px-6 text-white text-center">
+              <div className="max-w-7xl mx-auto space-y-8 relative z-10">
+                <div className="space-y-1">
+                  <h2 className="font-playfair font-bold text-2xl sm:text-3xl text-white">Our Operational Footprint</h2>
+                  <div className="text-xs sm:text-sm text-[#87c695]">Securing working capital and daily counter checkout across Kenya</div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-2 backdrop-blur-xs transform hover:-translate-y-1 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#11bf36] text-white flex items-center justify-center mx-auto mb-2 shadow-sm">
+                      <span className="material-symbols-outlined text-xl">point_of_sale</span>
+                    </div>
+                    <div className="font-playfair text-3xl sm:text-4xl font-bold text-[#b1f2be] font-mono tracking-tight">
+                      {counts.terminals}+
+                    </div>
+                    <h6 className="text-xs font-bold uppercase tracking-wider text-gray-300">Active Counter Terminals</h6>
+                  </div>
+
+                  <div className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-2 backdrop-blur-xs transform hover:-translate-y-1 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#11bf36] text-white flex items-center justify-center mx-auto mb-2 shadow-sm">
+                      <span className="material-symbols-outlined text-xl">database</span>
+                    </div>
+                    <div className="font-playfair text-3xl sm:text-4xl font-bold text-[#b1f2be] font-mono tracking-tight">
+                      {counts.sms.toLocaleString()}
+                    </div>
+                    <h6 className="text-xs font-bold uppercase tracking-wider text-gray-300">SMS Debt Reminders Sent</h6>
+                  </div>
+
+                  <div className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-2 backdrop-blur-xs transform hover:-translate-y-1 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#11bf36] text-white flex items-center justify-center mx-auto mb-2 shadow-sm">
+                      <span className="material-symbols-outlined text-xl">groups</span>
+                    </div>
+                    <div className="font-playfair text-3xl sm:text-4xl font-bold text-[#b1f2be] font-mono tracking-tight">
+                      {counts.farmers.toLocaleString()}+
+                    </div>
+                    <h6 className="text-xs font-bold uppercase tracking-wider text-gray-300">Registered Smallholders</h6>
+                  </div>
+
+                  <div className="p-6 bg-white/5 border border-white/10 rounded-2xl space-y-2 backdrop-blur-xs transform hover:-translate-y-1 transition-transform">
+                    <div className="w-10 h-10 rounded-xl bg-[#11bf36] text-white flex items-center justify-center mx-auto mb-2 shadow-sm">
                       <span className="material-symbols-outlined text-xl">verified</span>
                     </div>
-                    <div>
-                      <div className="font-playfair font-bold text-base leading-tight">98% Recovery</div>
-                      <div className="text-[10px] text-gray-500">M-Pesa Smallholder Credit</div>
+                    <div className="font-playfair text-3xl sm:text-4xl font-bold text-[#b1f2be] font-mono tracking-tight">
+                      {counts.pcpb}%
                     </div>
+                    <h6 className="text-xs font-bold uppercase tracking-wider text-gray-300">PCPB Batch Audited</h6>
                   </div>
                 </div>
               </div>
-            </section>
+            </div>
 
-            {/* Section 2: 6 Operational Grid Boxes (Inspired by FarmersTrend layout_four feature-list) */}
-            <section className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-gray-200 pb-4">
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-[#11bf36] uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-sm">grid_view</span>
-                    <span>Core Value Chain Categories</span>
-                  </div>
-                  <h2 className="font-playfair font-bold text-2xl md:text-3xl text-[#131b2e]">
-                    Integrated Agrovet Operational Modules
-                  </h2>
-                </div>
-                <p className="text-xs text-gray-500 max-w-md">
-                  Everything required to manage a high-volume agrochemical, seed, fertilizer, and veterinary dispensary in Kenya.
+            <section id="cl_clients" className="space-y-6 w-full py-4">
+              <div className="max-w-7xl mx-auto px-6 md:px-12 text-center space-y-2">
+                <h2 className="font-playfair font-bold text-2xl sm:text-3xl text-[#131b2e] relative inline-block pb-3">
+                  Ecosystem Integrations &amp; Industry Standards
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#11bf36]"></span>
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-500 max-w-3xl mx-auto">
+                  Engineered to communicate seamlessly with Kenya&apos;s leading mobile payment switches, telco SMS gateways, statutory agricultural boards, and verified input manufacturers.
                 </p>
               </div>
 
-              {/* 6 Category Feature Boxes with Real Media Photos */}
-              <div className="grid md:grid-cols-3 gap-6">
-                {/* Box 1: Crop Input & POS Checkout (cabbage.jpg) */}
-                <div className="bg-white rounded-2xl border border-[#dae2fd] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-48 overflow-hidden bg-gray-100">
-                      <img
-                        src="/media/cabbage.jpg"
-                        alt="High-Yield Vegetables & Crop Protection"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute top-3 left-3 bg-[#003b1b]/90 text-[#b1f2be] text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-400/30">
-                        Counter POS &amp; Inputs
-                      </div>
-                    </div>
-                    <div className="p-5 space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-lg">point_of_sale</span>
-                      </div>
-                      <h3 className="font-playfair font-bold text-base text-[#131b2e]">
-                        Fast POS Counter &amp; Agrochemical Sales
-                      </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        High-speed barcode scanning with F2 shortcut, split tender (M-Pesa, Cash, Credit), and instant thermal receipt printing.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-5 pt-0">
-                    <button
-                      onClick={() => setActiveTab('system')}
-                      className="text-xs font-bold text-[#003b1b] hover:text-[#11bf36] flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>Explore POS Architecture</span>
-                      <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                    </button>
-                  </div>
-                </div>
+              <div className="relative overflow-hidden w-full py-4">
+                <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#faf8ff] to-transparent z-10"></div>
+                <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#faf8ff] to-transparent z-10"></div>
 
-                {/* Box 2: Livestock & Dairy Farming (cows.jpg) */}
-                <div className="bg-white rounded-2xl border border-[#dae2fd] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-48 overflow-hidden bg-gray-100">
-                      <img
-                        src="/media/cows.jpg"
-                        alt="Livestock & Dairy Farming in Kenya"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute top-3 left-3 bg-[#003b1b]/90 text-[#b1f2be] text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-400/30">
-                        Livestock &amp; Dairy
-                      </div>
-                    </div>
-                    <div className="p-5 space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-lg">pets</span>
-                      </div>
-                      <h3 className="font-playfair font-bold text-base text-[#131b2e]">
-                        Veterinary Medicines &amp; Dairy Feeds
-                      </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Track clinical dewormers, acaricides, and dairy meal with tripartite cooperative milk check-off credit guarantees.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-5 pt-0">
-                    <button
-                      onClick={() => setActiveTab('system')}
-                      className="text-xs font-bold text-[#003b1b] hover:text-[#11bf36] flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>View Livestock Ledger</span>
-                      <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Box 3: Fruit Seedlings & Horticulture (fruit.jpg) */}
-                <div className="bg-white rounded-2xl border border-[#dae2fd] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-48 overflow-hidden bg-gray-100">
-                      <img
-                        src="/media/fruit.jpg"
-                        alt="Fruit Seedlings & Horticultural Orchards"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute top-3 left-3 bg-[#003b1b]/90 text-[#b1f2be] text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-400/30">
-                        Fruit &amp; Certified Seeds
-                      </div>
-                    </div>
-                    <div className="p-5 space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-lg">nature</span>
-                      </div>
-                      <h3 className="font-playfair font-bold text-base text-[#131b2e]">
-                        Certified Seedlings &amp; Orchard Nursery
-                      </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        KEPHIS lot certification tracking for avocado, macadamia, and passion fruit seedlings with automated planting advisory.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-5 pt-0">
-                    <button
-                      onClick={() => setActiveTab('system')}
-                      className="text-xs font-bold text-[#003b1b] hover:text-[#11bf36] flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>Inspect Seed Module</span>
-                      <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Box 4: Smallholder Credit Book (seedfarm.jpg logo / card) */}
-                <div className="bg-white rounded-2xl border border-[#dae2fd] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-48 overflow-hidden bg-[#faf8ff] flex items-center justify-center p-6 border-b border-gray-100">
-                      <img
-                        src="/media/seedfarm.jpg"
-                        alt="Seed Farm Agro-Network"
-                        className="max-h-36 object-contain transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute top-3 left-3 bg-[#003b1b]/90 text-[#b1f2be] text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-400/30">
-                        Smallholder Credit
-                      </div>
-                    </div>
-                    <div className="p-5 space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-lg">account_balance_wallet</span>
-                      </div>
-                      <h3 className="font-playfair font-bold text-base text-[#131b2e]">
-                        Smallholder Credit &amp; Debt Book
-                      </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Replace torn debt notebooks with digital credit ledgers, National ID verification, credit ceilings, and M-Pesa SMS reminders.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-5 pt-0">
-                    <button
-                      onClick={() => setActiveTab('system')}
-                      className="text-xs font-bold text-[#003b1b] hover:text-[#11bf36] flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>View Credit Rules</span>
-                      <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Box 5: Batch Expiry & FEFO Control (yielder.png logo / card) */}
-                <div className="bg-white rounded-2xl border border-[#dae2fd] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-48 overflow-hidden bg-[#f3faf6] flex items-center justify-center p-6 border-b border-gray-100">
-                      <img
-                        src="/media/yielder.png"
-                        alt="Yielder Agribusiness Engine"
-                        className="max-h-24 object-contain transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute top-3 left-3 bg-[#003b1b]/90 text-[#b1f2be] text-[10px] font-bold px-2.5 py-1 rounded-md border border-emerald-400/30">
-                        PCPB FEFO Expiry
-                      </div>
-                    </div>
-                    <div className="p-5 space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-lg">inventory_2</span>
-                      </div>
-                      <h3 className="font-playfair font-bold text-base text-[#131b2e]">
-                        Inventory, Batches &amp; FEFO Expiry
-                      </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Automated first-expiry-first-out dispensing with 30-day early warnings to eliminate chemical shelf-life spoilage.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-5 pt-0">
-                    <button
-                      onClick={() => setActiveTab('system')}
-                      className="text-xs font-bold text-[#003b1b] hover:text-[#11bf36] flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>Explore Expiry Monitor</span>
-                      <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Box 6: Shift Register & Drawer Balancing */}
-                <div className="bg-white rounded-2xl border border-[#dae2fd] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col justify-between">
-                  <div>
-                    <div className="relative h-48 overflow-hidden bg-gradient-to-br from-emerald-900 to-[#002410] flex items-center justify-center p-6 text-white text-center">
-                      <div className="space-y-2">
-                        <div className="w-12 h-12 rounded-2xl bg-white/10 mx-auto flex items-center justify-center text-emerald-400">
-                          <span className="material-symbols-outlined text-2xl">lock</span>
-                        </div>
-                        <div className="font-playfair font-bold text-lg">Manager PIN Protected</div>
-                        <div className="text-[11px] text-emerald-200">Immutable Z-Report Snapshots</div>
-                      </div>
-                      <div className="absolute top-3 left-3 bg-black/40 text-[#b1f2be] text-[10px] font-bold px-2.5 py-1 rounded-md border border-white/20">
-                        Drawer Audit
-                      </div>
-                    </div>
-                    <div className="p-5 space-y-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-lg">receipt_long</span>
-                      </div>
-                      <h3 className="font-playfair font-bold text-base text-[#131b2e]">
-                        Shift Register &amp; Daily Safe Close
-                      </h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Denomination banknote tally matched against digital transaction journals to ensure zero end-of-day drawer discrepancy.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="p-5 pt-0">
-                    <button
-                      onClick={() => setActiveTab('guide')}
-                      className="text-xs font-bold text-[#003b1b] hover:text-[#11bf36] flex items-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>Read Reconciliation Guide</span>
-                      <span className="material-symbols-outlined text-xs">arrow_forward</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
-            {/* Clean Animated Metrics Summary Bar with Playfair Typography */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-200">
-              <div className="bg-white p-4 rounded-2xl border border-[#dae2fd] transition-all duration-300 hover:-translate-y-1 hover:shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="font-playfair text-2xl font-bold text-[#003b1b]">99.8%</div>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                </div>
-                <div className="text-xs text-gray-500 font-medium mt-0.5">Shift Reconciliation Rate</div>
-              </div>
-
-              <div className="bg-white p-4 rounded-2xl border border-[#dae2fd] transition-all duration-300 hover:-translate-y-1 hover:shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="font-playfair text-2xl font-bold text-[#003b1b]">&lt; 3 sec</div>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                </div>
-                <div className="text-xs text-gray-500 font-medium mt-0.5">Barcode POS Checkout</div>
-              </div>
-
-              <div className="bg-white p-4 rounded-2xl border border-[#dae2fd] transition-all duration-300 hover:-translate-y-1 hover:shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="font-playfair text-2xl font-bold text-[#003b1b]">KES 0</div>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                </div>
-                <div className="text-xs text-gray-500 font-medium mt-0.5">Notebook Debt Leakage</div>
-              </div>
-
-              <div className="bg-white p-4 rounded-2xl border border-[#dae2fd] transition-all duration-300 hover:-translate-y-1 hover:shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="font-playfair text-2xl font-bold text-[#003b1b]">100%</div>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                </div>
-                <div className="text-xs text-gray-500 font-medium mt-0.5">Offline-Ready SQLite</div>
-              </div>
-            </div>
-
-            {/* Field Operations & Agrovet Operator Dispatches (Static Editorial Grid - Zero Carousel) */}
-            <section className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-gray-200 pb-4">
-                <div className="space-y-1">
-                  <div className="text-xs font-bold text-[#11bf36] uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-sm">rate_review</span>
-                    <span>Field Operator Dispatches &amp; Case Studies</span>
-                  </div>
-                  <h3 className="font-playfair font-bold text-2xl md:text-3xl text-[#131b2e]">
-                    Trusted by 1,400+ Agrovets in Kirinyaga &amp; Mount Kenya
-                  </h3>
-                </div>
-                <div className="text-xs text-gray-500 max-w-sm">
-                  Real operational experiences from managers, agronomists, and counter cashiers using AgroFlow daily.
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                {fieldReviews.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl border border-[#dae2fd] p-5 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between space-y-4 group"
-                  >
-                    <div className="space-y-3">
-                      <div className="relative h-36 rounded-xl overflow-hidden bg-gray-100">
-                        <img
-                          src={item.photo}
-                          alt={item.store}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute top-2 left-2 bg-[#003b1b]/90 text-[#b1f2be] text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-400/30">
-                          {item.category}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-1 text-amber-500 text-xs">
-                        <span className="material-symbols-outlined text-sm text-amber-500">star</span>
-                        <span className="material-symbols-outlined text-sm text-amber-500">star</span>
-                        <span className="material-symbols-outlined text-sm text-amber-500">star</span>
-                        <span className="material-symbols-outlined text-sm text-amber-500">star</span>
-                        <span className="material-symbols-outlined text-sm text-amber-500">star</span>
-                        <span className="text-[10px] text-gray-400 ml-1 font-semibold">5.0 Verified</span>
-                      </div>
-
-                      <blockquote className="font-playfair italic text-xs text-gray-700 leading-relaxed">
-                        &ldquo;{item.quote}&rdquo;
-                      </blockquote>
-                    </div>
-
-                    <div className="pt-3 border-t border-gray-100 space-y-1.5">
-                      <div className="font-bold text-xs text-[#003b1b]">{item.store}</div>
-                      <div className="text-[11px] text-gray-500 leading-tight">
-                        {item.manager}
-                      </div>
-                      <div className="text-[10px] text-gray-400">
-                        {item.location}
-                      </div>
-                      <div className="mt-2 inline-block font-bold text-[11px] text-[#003b1b] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                        {item.stat}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Circular Impact Gauges & Agricultural Performance Stats */}
-            <div className="bg-white rounded-3xl p-8 border border-[#dae2fd] shadow-sm space-y-6">
-              <div className="max-w-xl space-y-1">
-                <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  Operational Impact &amp; Adoption
-                </div>
-                <h3 className="font-playfair font-bold text-2xl text-[#131b2e]">
-                  Measured Results Across Smallholder Agro-Networks
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-2">
-                {/* Gauge 1: 98% Credit Recovery */}
-                <div className="flex flex-col items-center text-center p-6 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 space-y-3">
-                  <div className="relative w-28 h-28 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="42" stroke="#e2e8f0" strokeWidth="8" fill="none" />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="42"
-                        stroke="#11bf36"
-                        strokeWidth="8"
-                        strokeDasharray={264}
-                        strokeDashoffset={264 * (1 - 0.98)}
-                        strokeLinecap="round"
-                        fill="none"
-                        className="transition-all duration-1000"
-                      />
-                    </svg>
-                    <div className="absolute flex flex-col items-center">
-                      <span className="font-playfair font-bold text-2xl text-[#003b1b]">98%</span>
-                      <span className="text-[9px] uppercase font-bold text-gray-500">Recovery</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-playfair font-bold text-sm text-[#003b1b]">Farmer Credit Settlement</h4>
-                    <p className="text-xs text-gray-500 mt-1">Automated M-Pesa SMS reminders eliminate unsecured bad debt.</p>
-                  </div>
-                </div>
-
-                {/* Gauge 2: 100% FEFO Batch Traceability */}
-                <div className="flex flex-col items-center text-center p-6 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 space-y-3">
-                  <div className="relative w-28 h-28 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="42" stroke="#e2e8f0" strokeWidth="8" fill="none" />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="42"
-                        stroke="#11bf36"
-                        strokeWidth="8"
-                        strokeDasharray={264}
-                        strokeDashoffset={264 * (1 - 1.0)}
-                        strokeLinecap="round"
-                        fill="none"
-                        className="transition-all duration-1000"
-                      />
-                    </svg>
-                    <div className="absolute flex flex-col items-center">
-                      <span className="font-playfair font-bold text-2xl text-[#003b1b]">100%</span>
-                      <span className="text-[9px] uppercase font-bold text-gray-500">Traceable</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-playfair font-bold text-sm text-[#003b1b]">PCPB &amp; KEPHIS Compliance</h4>
-                    <p className="text-xs text-gray-500 mt-1">Every chemical batch, expiration date, and lot registration is audited.</p>
-                  </div>
-                </div>
-
-                {/* Gauge 3: 0.2% Drawer Shortage */}
-                <div className="flex flex-col items-center text-center p-6 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 space-y-3">
-                  <div className="relative w-28 h-28 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="42" stroke="#e2e8f0" strokeWidth="8" fill="none" />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="42"
-                        stroke="#11bf36"
-                        strokeWidth="8"
-                        strokeDasharray={264}
-                        strokeDashoffset={264 * (1 - 0.998)}
-                        strokeLinecap="round"
-                        fill="none"
-                        className="transition-all duration-1000"
-                      />
-                    </svg>
-                    <div className="absolute flex flex-col items-center">
-                      <span className="font-playfair font-bold text-2xl text-[#003b1b]">99.8%</span>
-                      <span className="text-[9px] uppercase font-bold text-gray-500">Balanced</span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-playfair font-bold text-sm text-[#003b1b]">Shift Drawer Balancing</h4>
-                    <p className="text-xs text-gray-500 mt-1">Denomination counting matched against digital sales ledger daily.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Trusted Institutional Partners & Agricultural Ecosystem (Using Local Uploaded Partner Logos) */}
-            <div className="bg-[#002811] text-white rounded-3xl p-6 md:p-8 shadow-md border border-[#14532d] space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#14532d] pb-3">
-                <div>
-                  <div className="text-[10px] text-[#87c695] uppercase font-bold tracking-widest">
-                    National &amp; County Agricultural Ecosystem
-                  </div>
-                  <h4 className="font-playfair font-bold text-lg text-white">
-                    Integrated with Trusted Value Chain Partners
-                  </h4>
-                </div>
-                <div className="text-xs text-[#87c695] font-mono">
-                  Safaricom Daraja • Africa&apos;s Talking • PCPB • KEPHIS
-                </div>
-              </div>
-
-              {/* Scrolling Partners Marquee with Real Media Logos */}
-              <div className="overflow-hidden py-3">
-                <div className="animate-logo-scroll flex items-center gap-10 opacity-90 hover:opacity-100 transition-opacity">
+                <div className="flex animate-marquee gap-6 whitespace-nowrap will-change-transform py-2">
                   {[
-                    { name: 'Kenya Livestock Producers Association (KLPA)', img: '/media/klpa_logo.png' },
-                    { name: 'Oxfarm Organic Ltd', img: '/media/oxfarm_logo.png' },
-                    { name: 'Farmers +254 Network', img: '/media/farmers254_logo.png' },
-                    { name: 'Farm Expose Agritourism Kenya', img: '/media/farmexpose_logo.png' },
-                    { name: 'Plant a Fruit Org', img: '/media/plantafruit_logo.png' },
-                    { name: 'Seed Farm Kenya', img: '/media/seedfarm.jpg' },
-                    { name: 'Yielder Agribusiness', img: '/media/yielder.png' },
-                    { name: 'Kenya Livestock Producers Association (KLPA)', img: '/media/klpa_logo.png' },
-                    { name: 'Oxfarm Organic Ltd', img: '/media/oxfarm_logo.png' },
-                    { name: 'Farmers +254 Network', img: '/media/farmers254_logo.png' },
-                    { name: 'Farm Expose Agritourism Kenya', img: '/media/farmexpose_logo.png' },
-                    { name: 'Plant a Fruit Org', img: '/media/plantafruit_logo.png' },
+                    { name: 'Farmers254', fullName: 'Kenya Agribusiness Directory', img: '/media/farmers254_logo.png' },
+                    { name: 'KLPA Kenya', fullName: 'Kenya Livestock Producers Association', img: '/media/klpa_logo.png' },
+                    { name: 'Oxfarm Organic', fullName: 'Certified Seedlings & Input Distribution', img: '/media/oxfarm_logo.png' },
+                    { name: 'FarmExpose', fullName: 'Agribusiness Trade & Commercial Media', img: '/media/farmexpose_logo.png' },
+                    { name: 'Planta Fruit', fullName: 'Commercial Fruit Nursery Network', img: '/media/plantafruit_logo.png' },
+                    { name: 'Yielder Tech', fullName: 'Field Agronomy & Advisory Services', img: '/media/yielder.png' },
+                    { name: 'KEPHIS & PCPB', fullName: 'Statutory Seed & Chemical Records', img: '/media/seedfarm.jpg' },
+                    { name: 'SQLite POS Engine', fullName: 'Zero-Downtime Offline Counter Cache', img: '/media/cabbage.jpg' },
+                    
+                    { name: 'Farmers254', fullName: 'Kenya Agribusiness Directory', img: '/media/farmers254_logo.png' },
+                    { name: 'KLPA Kenya', fullName: 'Kenya Livestock Producers Association', img: '/media/klpa_logo.png' },
+                    { name: 'Oxfarm Organic', fullName: 'Certified Seedlings & Input Distribution', img: '/media/oxfarm_logo.png' },
+                    { name: 'FarmExpose', fullName: 'Agribusiness Trade & Commercial Media', img: '/media/farmexpose_logo.png' },
+                    { name: 'Planta Fruit', fullName: 'Commercial Fruit Nursery Network', img: '/media/plantafruit_logo.png' },
+                    { name: 'Yielder Tech', fullName: 'Field Agronomy & Advisory Services', img: '/media/yielder.png' },
+                    { name: 'KEPHIS & PCPB', fullName: 'Statutory Seed & Chemical Records', img: '/media/seedfarm.jpg' },
+                    { name: 'SQLite POS Engine', fullName: 'Zero-Downtime Offline Counter Cache', img: '/media/cabbage.jpg' },
                   ].map((partner, pIdx) => (
-                    <div key={pIdx} className="flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-xl shrink-0 backdrop-blur-xs">
+                    <div
+                      key={pIdx}
+                      className="inline-flex items-center gap-3.5 bg-white border border-gray-200/90 hover:border-[#11bf36] px-5 py-3.5 rounded-2xl shadow-xs hover:shadow-md transition-all cursor-default shrink-0 group"
+                    >
                       <img
                         src={partner.img}
                         alt={partner.name}
-                        className="w-10 h-10 rounded-lg object-contain bg-white p-1"
+                        className="w-10 h-10 rounded-xl object-contain bg-gray-50 p-1 border border-gray-100 shadow-2xs shrink-0 group-hover:scale-105 transition-transform"
                       />
-                      <span className="text-xs font-semibold text-gray-200">{partner.name}</span>
+                      <div className="text-left">
+                        <div className="text-xs font-bold text-[#131b2e] group-hover:text-[#11bf36] transition-colors">{partner.name}</div>
+                        <div className="text-[10px] text-gray-500 font-medium">{partner.fullName}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
+            </section>
+
+            <div className="max-w-7xl mx-auto px-6 md:px-12">
+              <section id="free-hand-text-section" className="bg-[#f3faf6] border border-emerald-200 rounded-2xl p-6 md:p-8 text-xs sm:text-sm text-emerald-950 leading-relaxed shadow-xs">
+                <p>
+                  <strong>AgroFlow</strong> is Kenya&apos;s purpose-built store operating system that enables commercial agro-dealers, seed stockists, and cooperative input hubs to automate inventory, track customer debt, and enforce statutory chemical dispensation. Built to eliminate the high failure rate caused by uncollected credit and shelf-life chemical spoilage, AgroFlow ensures rural agribusinesses remain resilient, audit-compliant, and profitable season after season.
+                </p>
+              </section>
             </div>
           </div>
         )}
 
-        {/* 2. ABOUT US TAB */}
         {activeTab === 'about' && (
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 border border-[#dae2fd] shadow-lg space-y-6 animate-fade-in">
+          <div className="max-w-4xl mx-auto my-10 p-6 sm:p-8 bg-white rounded-2xl border border-[#dae2fd] shadow-lg space-y-6 animate-fade-in">
             <div className="border-b pb-4 space-y-1">
               <h2 className="font-playfair text-2xl md:text-3xl font-bold text-[#131b2e]">About AgroFlow</h2>
               <p className="text-xs text-gray-500">Modernizing Agribusiness &amp; Agrovets in Kirinyaga County, Kenya</p>
@@ -901,7 +1239,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 </p>
               </div>
 
-              {/* Comparison Matrix: Paper Notebooks vs AgroFlow */}
               <div className="space-y-3 pt-2">
                 <h3 className="font-playfair font-bold text-[#131b2e] text-xl">Traditional Paper Ledgers vs. AgroFlow OS</h3>
                 <div className="overflow-x-auto border border-gray-200 rounded-xl shadow-xs">
@@ -939,7 +1276,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 </div>
               </div>
 
-              {/* Visual Agricultural Heritage & Field Impact Showcase */}
               <div className="grid sm:grid-cols-2 gap-4 pt-2">
                 <div className="relative rounded-2xl overflow-hidden border border-gray-200 shadow-sm group">
                   <img
@@ -950,7 +1286,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 text-white">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-[#87c695]">Grassroots Impact</span>
                     <h4 className="font-playfair font-bold text-base">Smallholder Food Security &amp; Crop Yields</h4>
-                    <p className="text-[11px] text-gray-200 leading-snug mt-0.5">Directly supporting 1,400+ agrovets that dispense inputs to over 28,000 farmers.</p>
+                    <p className="text-[11px] text-gray-200 leading-snug mt-0.5">Empowering 350+ commercial agrovet counters dispensing certified inputs to over 48,500 smallholders.</p>
                   </div>
                 </div>
 
@@ -968,7 +1304,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 </div>
               </div>
 
-              {/* Our Leadership & Input Operations Team */}
               <div className="space-y-3 pt-4 border-t border-gray-200">
                 <div className="space-y-1">
                   <h3 className="font-playfair font-bold text-[#131b2e] text-xl">Operational Leadership Team</h3>
@@ -1040,16 +1375,14 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
           </div>
         )}
 
-        {/* 3. ABOUT SYSTEM TAB */}
         {activeTab === 'system' && (
-          <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
+          <div className="max-w-5xl mx-auto my-10 px-4 sm:px-6 space-y-6 animate-fade-in">
             <div className="bg-white rounded-2xl p-8 border border-[#dae2fd] shadow-lg space-y-6">
               <div className="border-b pb-4 space-y-1">
                 <h2 className="font-playfair text-2xl md:text-3xl font-bold text-[#131b2e]">System Architecture &amp; Modules</h2>
                 <p className="text-xs text-gray-500">Click any of the 6 operational pillars to inspect its data flow and capabilities</p>
               </div>
 
-              {/* Interactive Module Grid */}
               <div className="grid md:grid-cols-3 gap-3 text-xs">
                 {[
                   {
@@ -1099,7 +1432,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     }`}
                   >
                     <h3 className="font-playfair font-bold text-sm text-[#003b1b] flex items-center gap-2">
-                      <span className="material-symbols-outlined text-base">{mod.icon}</span>
+                      <span className="material-symbols-outlined text-base text-[#11bf36]">{mod.icon}</span>
                       {mod.title}
                     </h3>
                     <p className="text-gray-600 leading-relaxed">{mod.desc}</p>
@@ -1107,10 +1440,9 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 ))}
               </div>
 
-              {/* Module Deep-Dive Inspection Card */}
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-3 text-xs animate-fade-in">
                 <div className="font-playfair font-bold text-base text-[#003b1b] flex items-center gap-2">
-                  <span className="material-symbols-outlined text-base">info</span>
+                  <span className="material-symbols-outlined text-base text-[#11bf36]">info</span>
                   {selectedSystemModule === 'pos' && 'Module Deep-Dive: Fast POS Counter & Split Payments'}
                   {selectedSystemModule === 'credit' && 'Module Deep-Dive: Smallholder Credit & Debt Book'}
                   {selectedSystemModule === 'inventory' && 'Module Deep-Dive: Inventory, Batches & Expiry Monitor'}
@@ -1158,7 +1490,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 </div>
               </div>
 
-              {/* End-to-End Agri-Supply Chain Architecture Pipeline */}
               <div className="space-y-4 pt-4 border-t border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <div>
@@ -1166,7 +1497,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     <p className="text-xs text-gray-500">From supplier dock to smallholder harvest settlement</p>
                   </div>
                   <div className="flex items-center gap-1 text-[11px] font-bold text-[#003b1b] bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                    <span className="material-symbols-outlined text-sm">security</span>
+                    <span className="material-symbols-outlined text-sm text-[#11bf36]">security</span>
                     <span>100% PCPB &amp; KEPHIS Validated</span>
                   </div>
                 </div>
@@ -1217,20 +1548,18 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
           </div>
         )}
 
-        {/* 4. SYSTEM GUIDE TAB */}
         {activeTab === 'guide' && (
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl p-8 border border-[#dae2fd] shadow-lg space-y-6 animate-fade-in">
+          <div className="max-w-4xl mx-auto my-10 p-6 sm:p-8 bg-white rounded-2xl border border-[#dae2fd] shadow-lg space-y-6 animate-fade-in">
             <div className="border-b pb-4 space-y-1">
               <h2 className="font-playfair text-2xl md:text-3xl font-bold text-[#131b2e]">AgroFlow System User Manual &amp; Guide</h2>
               <p className="text-xs text-gray-500">Step-by-step operational workflows for Agrovet Personnel</p>
             </div>
 
             <div className="space-y-6 text-xs text-gray-700">
-              {/* Interactive Keyboard Shortcut Tester */}
               <div className="p-4 bg-[#eaedff] border border-[#dae2fd] rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="font-playfair font-bold text-[#003b1b] text-sm uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-base">keyboard</span>
+                    <span className="material-symbols-outlined text-base text-[#11bf36]">keyboard</span>
                     Global Keyboard Shortcut Tester
                   </h3>
                   <span className="text-[11px] text-gray-500">Press keys on your keyboard or click below</span>
@@ -1306,7 +1635,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 )}
               </div>
 
-              {/* Role-Based Workflow Tabs (Cashier & Manager) */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-playfair font-bold text-base text-[#131b2e]">Role-Based Operational Guide</h3>
@@ -1330,7 +1658,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 {selectedRole === 'cashier' && (
                   <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3 animate-fade-in">
                     <div className="font-playfair font-bold text-[#003b1b] text-base flex items-center gap-2">
-                      <span className="material-symbols-outlined text-base">point_of_sale</span>
+                      <span className="material-symbols-outlined text-base text-[#11bf36]">point_of_sale</span>
                       Cashier Workflow (Shop Attendants)
                     </div>
                     <ul className="space-y-2 text-gray-600 pl-1">
@@ -1357,7 +1685,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 {selectedRole === 'manager' && (
                   <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-3 animate-fade-in">
                     <div className="font-playfair font-bold text-[#003b1b] text-base flex items-center gap-2">
-                      <span className="material-symbols-outlined text-base">admin_panel_settings</span>
+                      <span className="material-symbols-outlined text-base text-[#11bf36]">admin_panel_settings</span>
                       Manager Workflow (Owners &amp; Administrators)
                     </div>
                     <ul className="space-y-2 text-gray-600 pl-1">
@@ -1382,7 +1710,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 )}
               </div>
 
-              {/* Hardware & Peripherals Setup Guide */}
               <div className="space-y-3 pt-4 border-t border-gray-200">
                 <div className="space-y-1">
                   <h3 className="font-playfair font-bold text-base text-[#131b2e]">Hardware &amp; Counter Peripherals Integration</h3>
@@ -1391,8 +1718,8 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
 
                 <div className="grid sm:grid-cols-3 gap-3">
                   <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                      <span className="material-symbols-outlined text-sm">barcode_scanner</span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#11bf36] flex items-center justify-center font-bold">
+                      <span className="material-symbols-outlined text-sm text-[#11bf36]">barcode_scanner</span>
                     </div>
                     <div className="font-playfair font-bold text-xs text-[#003b1b]">USB / Bluetooth Barcode Scanners</div>
                     <p className="text-[11px] text-gray-600 leading-snug">
@@ -1401,8 +1728,8 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   </div>
 
                   <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                      <span className="material-symbols-outlined text-sm">print</span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#11bf36] flex items-center justify-center font-bold">
+                      <span className="material-symbols-outlined text-sm text-[#11bf36]">print</span>
                     </div>
                     <div className="font-playfair font-bold text-xs text-[#003b1b]">58mm / 80mm Thermal Printers</div>
                     <p className="text-[11px] text-gray-600 leading-snug">
@@ -1411,8 +1738,8 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                   </div>
 
                   <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-1.5">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#003b1b] flex items-center justify-center font-bold">
-                      <span className="material-symbols-outlined text-sm">scale</span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-[#11bf36] flex items-center justify-center font-bold">
+                      <span className="material-symbols-outlined text-sm text-[#11bf36]">scale</span>
                     </div>
                     <div className="font-playfair font-bold text-xs text-[#003b1b]">Weighing Scales &amp; Bulk Fertilizer</div>
                     <p className="text-[11px] text-gray-600 leading-snug">
@@ -1422,7 +1749,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                 </div>
               </div>
 
-              {/* Expandable Operational FAQ Accordion */}
               <div className="space-y-3 pt-2">
                 <h3 className="font-playfair font-bold text-base text-[#131b2e]">Frequently Asked Operational Questions</h3>
                 <div className="space-y-2">
@@ -1465,11 +1791,11 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
           </div>
         )}
 
-        {/* 5. LOGIN TAB */}
         {activeTab === 'login' && (
-          <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-[#dae2fd] shadow-xl space-y-6 animate-fade-in">
+          <div className="max-w-md mx-auto my-12 px-4 animate-fade-in">
+            <div className="bg-white rounded-2xl p-6 md:p-8 border border-[#dae2fd] shadow-xl space-y-6">
             <div className="space-y-2 text-center">
-              <div className="w-12 h-12 bg-[#003b1b] text-[#b1f2be] rounded-xl mx-auto flex items-center justify-center font-bold text-2xl shadow-md">
+              <div className="w-12 h-12 bg-[#003b1b] text-[#11bf36] border border-[#11bf36]/30 rounded-xl mx-auto flex items-center justify-center font-bold text-2xl shadow-md">
                 <span className="material-symbols-outlined">lock</span>
               </div>
               <h2 className="font-playfair font-bold text-2xl text-[#131b2e] tracking-tight">Personnel Sign In</h2>
@@ -1494,7 +1820,7 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     placeholder="e.g. john.mwangi"
-                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#003b1b] focus:bg-white transition-all font-medium"
+                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#11bf36] focus:border-[#11bf36] focus:bg-white transition-all font-medium"
                   />
                 </div>
               </div>
@@ -1509,22 +1835,21 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#003b1b] focus:bg-white transition-all font-medium"
+                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#11bf36] focus:border-[#11bf36] focus:bg-white transition-all font-medium"
                   />
                 </div>
               </div>
 
-              {/* Quick Credentials Switcher (Manager & Cashier Only) */}
               <div className="pt-2">
                 <div className="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-2">Quick Sign-in Credentials:</div>
                 <div className="grid grid-cols-2 gap-2 font-mono text-[10px]">
                   <button
                     type="button"
                     onClick={() => setPreset('john.mwangi', 'admin123')}
-                    className="p-2 bg-emerald-50 text-emerald-900 rounded-lg border border-emerald-200 hover:bg-emerald-100 font-bold transition-all text-center cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                    className="p-2 bg-[#eaf8ed] text-[#003b1b] rounded-lg border border-[#11bf36]/40 hover:bg-[#d2f5db] font-bold transition-all text-center cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
                   >
-                    <div className="font-playfair font-bold text-xs">Manager</div>
-                    <div className="text-[9px] text-emerald-700 font-normal font-mono">john.mwangi</div>
+                    <div className="font-playfair font-bold text-xs text-[#003b1b]">Manager</div>
+                    <div className="text-[9px] text-[#11bf36] font-semibold font-mono">john.mwangi</div>
                   </button>
                   <button
                     type="button"
@@ -1540,50 +1865,271 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-[#003b1b] text-[#b1f2be] hover:bg-[#14532d] font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 mt-2 transform hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full py-3.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 mt-2 transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 {loading ? (
                   <>
-                    <span className="w-4 h-4 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin"></span>
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
                     <span>Authenticating...</span>
                   </>
                 ) : (
                   <>
                     <span className="material-symbols-outlined text-base">login</span>
-                    <span>Sign In</span>
+                    <span>Sign In to Terminal</span>
                   </>
                 )}
               </button>
             </form>
+            </div>
           </div>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-[#002b13] text-[#87c695] text-xs py-5 border-t border-[#14532d]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>AgroFlow Agribusiness Operating System © 2026. Engineered for Agrovets in Kirinyaga &amp; Kenya.</span>
+      <footer className="bg-[#002410] text-[#87c695] text-xs border-t border-[#14532d] relative overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#11bf36]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="border-b border-[#14532d]/80 bg-[#001c0d]/70">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#11bf36]/20 border border-[#11bf36]/40 flex items-center justify-center text-[#11bf36] shrink-0">
+                <span className="material-symbols-outlined text-xl">storefront</span>
+              </div>
+              <div>
+                <h3 className="text-white font-bold text-sm sm:text-base font-playfair">
+                  Ready to Deploy AgroFlow in Your Agrovet or Co-operative Branch?
+                </h3>
+                <p className="text-[#87c695]/80 text-xs">
+                  Zero setup downtime. Our Kirinyaga field technicians configure your barcode scanner, thermal printer, and SQLite database on-site.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 shrink-0">
+              <a
+                href="tel:+254790509684"
+                className="px-4 py-2.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+              >
+                <span className="material-symbols-outlined text-sm">call</span>
+                <span>Call +254 790 509 684</span>
+              </a>
+              <button
+                onClick={() => setActiveTab('login')}
+                className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">terminal</span>
+                <span>Sign In to POS</span>
+              </button>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-3.5 text-[11px] text-[#87c695]/90">
-            <a href="/legal" className="hover:text-white font-semibold transition-colors flex items-center gap-1">
-              <span className="material-symbols-outlined text-xs">gavel</span>
-              <span>Legal Hub</span>
-            </a>
-            <span className="text-[#14532d]">•</span>
-            <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
-            <span className="text-[#14532d]">•</span>
-            <a href="/privacy" className="hover:text-white transition-colors">Privacy (KDPA)</a>
-            <span className="text-[#14532d]">•</span>
-            <a href="/credit-policy" className="hover:text-white transition-colors">Fair Credit Policy</a>
-            <span className="text-[#14532d]">•</span>
-            <a href="/regulatory" className="hover:text-white transition-colors">PCPB &amp; KEPHIS</a>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2.5">
+                <img
+                  src="https://lh3.googleusercontent.com/aida/AEtjO1X9wFvkPwR2rD-0K7RfG9t5qZ6pueh0C-3t9cT_cBLxyVLB8zYvPOEj74ThuFFBhNzqKYSI--qvIwvubjHuCGbO_Ff2zBPZr4eo-ZohcRjmLH1RzKEgloqef7kc5bNLEBmdk9ZY2F_ILINM8h1jfuz_1mLi90KDf1sp2hMQrgHpKiLLwSjX7p7vbn-9ty5OUpbjAnn9tNRU319WM1-60_sndWDOC1TtuMwQFVZz2p5k4oxssS4PXQ466kom"
+                  alt="AgroFlow Logo"
+                  className="w-9 h-9 object-contain bg-white rounded-xl p-1 shadow-sm"
+                />
+                <span className="text-lg font-bold text-white font-playfair tracking-tight">AgroFlow OS</span>
+              </div>
+
+              <p className="text-xs text-[#87c695]/90 leading-relaxed">
+                AgroFlow is Kenya&apos;s specialized agribusiness store operating system. Purpose-engineered for commercial agrovets, agrochemical stockists, and cooperative input desks to eliminate drawer shortages, uncollected farmer credit, and chemical expiry spoilage.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-playfair font-bold text-sm text-white uppercase tracking-wider border-b border-[#14532d] pb-2">
+                Operational Modules
+              </h4>
+              <ul className="space-y-2 text-xs">
+                <li>
+                  <button
+                    onClick={() => {
+                      setActiveTab('home');
+                      setTimeout(() => {
+                        document.getElementById('core-engines')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="hover:text-white transition-colors flex items-center gap-2 text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">point_of_sale</span>
+                    <span>3-Second Counter POS (F2 Hotkey)</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setActiveTab('home');
+                      setTimeout(() => {
+                        document.getElementById('core-engines')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="hover:text-white transition-colors flex items-center gap-2 text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">account_balance_wallet</span>
+                    <span>Smallholder Credit Ledger &amp; SMS</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setActiveTab('home');
+                      setTimeout(() => {
+                        document.getElementById('core-engines')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="hover:text-white transition-colors flex items-center gap-2 text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">shield_with_heart</span>
+                    <span>30-Day FEFO Chemical Expiry Shield</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setActiveTab('home');
+                      setTimeout(() => {
+                        document.getElementById('operational-pillars')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="hover:text-white transition-colors flex items-center gap-2 text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">payments</span>
+                    <span>Cash Drawer &amp; Banknote Tally</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setActiveTab('home');
+                      setTimeout(() => {
+                        document.getElementById('operational-pillars')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="hover:text-white transition-colors flex items-center gap-2 text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">biotech</span>
+                    <span>Prescriptions &amp; Co-op Check-Off</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setActiveTab('home');
+                      setTimeout(() => {
+                        document.getElementById('operational-pillars')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="hover:text-white transition-colors flex items-center gap-2 text-left cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">inventory_2</span>
+                    <span>GRN Supplier Cost &amp; Margin Audit</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-playfair font-bold text-sm text-white uppercase tracking-wider border-b border-[#14532d] pb-2">
+                Governance &amp; Compliance
+              </h4>
+              <ul className="space-y-2 text-xs">
+                <li>
+                  <a href="/legal" className="hover:text-white transition-colors flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">gavel</span>
+                    <span>Legal Compliance Hub</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/regulatory" className="hover:text-white transition-colors flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">policy</span>
+                    <span>PCPB Cap 346 &amp; KEPHIS Seed Act</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/credit-policy" className="hover:text-white transition-colors flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">credit_score</span>
+                    <span>Fair Credit &amp; Debt Recovery Policy</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/privacy" className="hover:text-white transition-colors flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">lock</span>
+                    <span>Farmer Data Protection (KDPA 2019)</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/terms" className="hover:text-white transition-colors flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">description</span>
+                    <span>Agrovet Terms of Service</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/payments-policy" className="hover:text-white transition-colors flex items-center gap-2">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">smartphone</span>
+                    <span>M-Pesa Daraja STK Security Policy</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-playfair font-bold text-sm text-white uppercase tracking-wider border-b border-[#14532d] pb-2">
+                Support &amp; Deployment
+              </h4>
+              <div className="space-y-3 text-xs text-[#87c695]/90">
+                <div>
+                  <div className="font-bold text-white flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">support_agent</span>
+                    <span>Direct Technical Support:</span>
+                  </div>
+                  <div className="pl-4 text-[11px] text-gray-300 space-y-0.5 mt-1">
+                    <div>Hotline: <a href="tel:+254790509684" className="text-white font-bold hover:underline">+254 790 509 684</a></div>
+                    <div>Email: <a href="mailto:ops@agroflow.co.ke" className="text-white hover:underline">ops@agroflow.co.ke</a></div>
+                    <div className="text-[10px] text-emerald-400">Support Hours: Mon – Sat: 6:30 AM – 7:30 PM EAT</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="font-bold text-white flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">build</span>
+                    <span>On-Site Counter Installation:</span>
+                  </div>
+                  <div className="pl-4 text-[11px] text-gray-300 mt-1 leading-relaxed">
+                    Hardware, thermal receipt printer, barcode scanner, and offline SQLite terminal configuration available on-site for agribusinesses across Kenya.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-[#00170a] border-t border-[#14532d] py-5 text-[11px] text-[#87c695]/80">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#11bf36] animate-pulse"></span>
+              <span>
+                AgroFlow Agribusiness Operating System © 2026. Built with pride for Agrovet Operators in Kirinyaga &amp; across Kenya.
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="hover:text-white transition-colors flex items-center gap-1 font-semibold"
+              >
+                <span>Top</span>
+                <span className="material-symbols-outlined text-xs text-[#11bf36]">arrow_upward</span>
+              </button>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Video Demonstration Modal (Borrowed from Video CTA) */}
       {isVideoModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
           <div className="bg-[#002b13] border border-emerald-500/40 rounded-3xl max-w-2xl w-full p-6 text-white shadow-2xl space-y-4">
@@ -1600,7 +2146,6 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
               </button>
             </div>
 
-            {/* Video Player / Walkthrough Mock */}
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-black border border-emerald-900 shadow-inner flex flex-col items-center justify-center text-center p-6 space-y-3">
               <img
                 src="/media/farmer.jpg"
@@ -1636,13 +2181,106 @@ export const LandingLoginPage: React.FC<LandingLoginPageProps> = ({ onLoginSucce
         </div>
       )}
 
-      {/* Floating Back to Top / Quick Terminal Launcher */}
+      {selectedArticle && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="bg-white border border-gray-200 rounded-3xl max-w-3xl w-full my-8 text-[#131b2e] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="bg-[#002410] text-white p-6 border-b border-[#14532d] flex items-start justify-between gap-4 sticky top-0 z-10">
+              <div className="space-y-1.5">
+                <div className="text-xs text-[#11bf36] font-semibold">
+                  <span>{selectedArticle.readTime}</span>
+                </div>
+                <h3 className="font-playfair font-bold text-lg sm:text-xl text-white leading-tight">
+                  {selectedArticle.title}
+                </h3>
+                <div className="text-xs text-gray-300">
+                  <span>By {selectedArticle.author}</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-300 hover:text-white transition-colors cursor-pointer shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-6 md:p-8 space-y-6 overflow-y-auto text-xs sm:text-sm text-gray-700 leading-relaxed">
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-1">
+                <div className="font-bold text-[#003b1b] text-xs uppercase tracking-wide flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm text-[#11bf36]">lightbulb</span>
+                  <span>Operational Takeaway</span>
+                </div>
+                <p className="text-xs text-emerald-950 font-medium leading-relaxed">
+                  {selectedArticle.summary}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {selectedArticle.metrics.map((m, mIdx) => (
+                  <div key={mIdx} className="p-3.5 bg-gray-50 border border-gray-200 rounded-xl text-center space-y-0.5">
+                    <div className="font-playfair font-bold text-base sm:text-lg text-[#003b1b]">{m.value}</div>
+                    <div className="text-[10px] text-gray-500 font-semibold uppercase">{m.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-4 pt-2">
+                <h4 className="font-playfair font-bold text-base text-[#131b2e]">In-Depth Field Analysis</h4>
+                {selectedArticle.content.map((p, pIdx) => (
+                  <p key={pIdx} className="text-gray-600 leading-relaxed text-xs sm:text-sm">
+                    {p}
+                  </p>
+                ))}
+              </div>
+
+              <div className="p-5 bg-gray-50 border border-gray-200 rounded-2xl space-y-3">
+                <h4 className="font-playfair font-bold text-sm text-[#003b1b] uppercase tracking-wide">
+                  Key Recommendations for Store Owners
+                </h4>
+                <ul className="space-y-2">
+                  {selectedArticle.takeaways.map((item, tIdx) => (
+                    <li key={tIdx} className="flex items-start gap-2.5 text-xs text-gray-700">
+                      <span className="material-symbols-outlined text-[#11bf36] text-base shrink-0">check_circle</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="text-xs text-gray-500">
+                  AgroFlow Agribusiness Advisory Service • Kenyan Agrovet Network
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="tel:+254790509684"
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span className="material-symbols-outlined text-xs text-[#11bf36]">call</span>
+                    <span>Speak with Specialist</span>
+                  </a>
+                  <button
+                    onClick={() => {
+                      setSelectedArticle(null);
+                      setActiveTab('login');
+                    }}
+                    className="px-5 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer"
+                  >
+                    Open Counter POS
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="Back to Top"
-        className="fixed bottom-6 right-6 z-40 bg-[#003b1b] text-[#b1f2be] hover:bg-[#14532d] hover:text-white p-3 rounded-2xl shadow-xl border border-emerald-500/30 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center justify-center"
+        className="fixed bottom-6 right-6 z-40 bg-[#003b1b] text-[#11bf36] hover:bg-[#14532d] hover:text-white p-3 rounded-2xl shadow-xl border border-[#11bf36]/30 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex items-center justify-center"
       >
-        <span className="material-symbols-outlined text-lg">arrow_upward</span>
+        <span className="material-symbols-outlined text-lg text-[#11bf36]">arrow_upward</span>
       </button>
     </div>
   );

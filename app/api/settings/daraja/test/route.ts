@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
 import { queryOne } from '@/lib/db/index';
 import { decryptSecret } from '@/lib/crypto';
+import { requireAuth, assertRole, assertStoreAccess, AuthError } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     const body = await request.json();
-    const { storeId = 'store-01', shortcode, consumerKey, consumerSecret, passkey } = body;
+    const { storeId = user.storeId || 'store-01', shortcode, consumerKey, consumerSecret, passkey } = body;
+
+    assertStoreAccess(user, storeId);
 
     let targetShortcode = shortcode;
     let targetKey = consumerKey;
@@ -75,6 +83,9 @@ export async function POST(request: Request) {
       message: `Till Number ${cleanShortcode} format verified. Customer POS checkout will route directly to this Till.`,
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

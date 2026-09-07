@@ -86,52 +86,52 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside className="w-64 bg-[#003b1b] text-white flex flex-col shrink-0 h-screen sticky top-0 border-r border-[#14532d] shadow-xl z-20 select-none">
-      {/* Brand Header */}
       <div className="p-4 border-b border-[#14532d] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img
-            src="https://lh3.googleusercontent.com/aida/AEtjO1X9wFvkPwR2rD-0K7RfG9t5qZ6pueh0C-3t9cT_cBLxyVLB8zYvPOEj74ThuFFBhNzqKYSI--qvIwvubjHuCGbO_Ff2zBPZr4eo-ZohcRjmLH1RzKEgloqef7kc5bNLEBmdk9ZY2F_ILINM8h1jfuz_1mLi90KDf1sp2hMQrgHpKiLLwSjX7p7vbn-9ty5OUpbjAnn9tNRU319WM1-60_sndWDOC1TtuMwQFVZz2p5k4oxssS4PXQ466kom"
-            alt="AgroFlow Logo"
-            className="w-9 h-9 object-contain bg-white rounded-lg p-1 shadow-sm"
-          />
+          <div className="relative">
+            <img
+              src="https://lh3.googleusercontent.com/aida/AEtjO1X9wFvkPwR2rD-0K7RfG9t5qZ6pueh0C-3t9cT_cBLxyVLB8zYvPOEj74ThuFFBhNzqKYSI--qvIwvubjHuCGbO_Ff2zBPZr4eo-ZohcRjmLH1RzKEgloqef7kc5bNLEBmdk9ZY2F_ILINM8h1jfuz_1mLi90KDf1sp2hMQrgHpKiLLwSjX7p7vbn-9ty5OUpbjAnn9tNRU319WM1-60_sndWDOC1TtuMwQFVZz2p5k4oxssS4PXQ466kom"
+              alt="AgroFlow Logo"
+              className="w-9 h-9 object-contain bg-white rounded-lg p-1 shadow-sm"
+            />
+            <span className="absolute -bottom-1 left-0 w-full h-1 bg-[#11bf36] rounded-full"></span>
+          </div>
           <div>
             <div className="font-playfair font-bold text-lg tracking-tight text-white flex items-center gap-1.5">
               AgroFlow
-              <span className="text-[10px] uppercase font-sans font-semibold tracking-wider bg-[#14532d] text-[#87c695] px-1.5 py-0.5 rounded border border-[#87c695]/30">
+              <span className="text-[10px] uppercase font-sans font-semibold tracking-wider bg-[#11bf36]/20 text-[#11bf36] px-1.5 py-0.5 rounded border border-[#11bf36]/40">
                 Agri-OS
               </span>
             </div>
-            <div className="text-[11px] text-[#87c695] font-medium flex items-center gap-1 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <div className="text-[11px] text-gray-300 font-medium flex items-center gap-1 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#11bf36] animate-pulse"></span>
               Kerugoya Central Hub
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick POS Launch Button */}
       <div className="px-3 pt-3 pb-2">
         <button
           onClick={() => onNavigate('sales-pos')}
-          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-md cursor-pointer ${
+          className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md cursor-pointer ${
             currentScreen === 'sales-pos'
-              ? 'bg-[#b1f2be] text-[#00210d] ring-2 ring-white/50 shadow-lg'
-              : 'bg-[#14532d] text-[#87c695] hover:bg-[#1b6b3b] hover:text-white'
+              ? 'bg-[#11bf36] text-white ring-2 ring-white/50 shadow-lg'
+              : 'bg-[#11bf36]/90 text-white hover:bg-[#11bf36]'
           }`}
         >
           <div className="flex items-center gap-2.5">
             <span className="material-symbols-outlined text-lg">point_of_sale</span>
             <span>Quick Sale / POS</span>
           </div>
-          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-black/20 text-current">
+          <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-black/20 text-white">
             F2
           </span>
         </button>
       </div>
 
-      {/* Navigation List */}
       <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto no-scrollbar">
-        <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[#87c695]/70">
+        <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[#11bf36]/80">
           Agro-Enterprise Operations
         </div>
 
@@ -143,28 +143,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => onNavigate(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'bg-[#14532d] text-white shadow-xs font-semibold'
+                  ? 'bg-[#002410] border-l-4 border-[#11bf36] text-white shadow-xs font-semibold pl-2.5'
                   : 'text-white/80 hover:bg-white/5 hover:text-white'
               }`}
             >
               <div className="flex items-center gap-3 truncate">
                 <span
                   className={`material-symbols-outlined text-xl shrink-0 ${
-                    isActive ? 'text-[#87c695]' : 'text-white/60'
+                    isActive ? 'text-[#11bf36]' : 'text-white/60'
                   }`}
                 >
                   {item.icon}
                 </span>
                 <div className="truncate">
                   <div className="text-xs font-medium leading-tight truncate">{item.label}</div>
-                  <div className="text-[10px] text-[#87c695]/80 font-normal leading-tight mt-0.5 truncate">
+                  <div className={`text-[10px] font-normal leading-tight mt-0.5 truncate ${
+                    isActive ? 'text-[#11bf36]/90' : 'text-gray-400'
+                  }`}>
                     {item.sublabel}
                   </div>
                 </div>
               </div>
 
               {item.badge && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#14532d] text-[#b1f2be] shrink-0 border border-[#87c695]/30">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#11bf36]/20 text-[#11bf36] shrink-0 border border-[#11bf36]/40">
                   {item.badge}
                 </span>
               )}
@@ -179,9 +181,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       </nav>
 
-      {/* Footer: Progressive Disclosure Settings & Clean Sign Out */}
       <div className="p-3 bg-[#002b13] border-t border-[#14532d] space-y-2">
-        {/* Collapsible Progressive Disclosure Drawer for Settings */}
         <div className="rounded-xl border border-[#14532d] bg-[#003417] overflow-hidden transition-all duration-200">
           <button
             onClick={() => setIsSettingsOpen((prev) => !prev)}
@@ -200,18 +200,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </span>
           </button>
 
-          {/* Disclosed Settings Options */}
           {isSettingsOpen && (
             <div className="p-2 space-y-1 bg-[#002410] border-t border-[#14532d] animate-fade-in text-xs">
               {onOpenSubscriptionModal && (
                 <button
                   onClick={onOpenSubscriptionModal}
-                  className="w-full px-2.5 py-1.5 text-left text-[#b1f2be] hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                  className="w-full px-2.5 py-1.5 text-left text-[#11bf36] hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-sm text-[#87c695]">verified</span>
+                  <span className="material-symbols-outlined text-sm text-[#11bf36]">verified</span>
                   <div className="truncate">
                     <div className="font-semibold text-xs leading-tight">SaaS License &amp; Renewal</div>
-                    <div className="text-[10px] text-[#87c695]/80">Daily wallet &amp; status</div>
+                    <div className="text-[10px] text-gray-300">Daily wallet &amp; status</div>
                   </div>
                 </button>
               )}
@@ -221,7 +220,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={onOpenDarajaModal}
                   className="w-full px-2.5 py-1.5 text-left text-gray-200 hover:text-white hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-sm text-[#87c695]">phone_android</span>
+                  <span className="material-symbols-outlined text-sm text-[#11bf36]">phone_android</span>
                   <div className="truncate">
                     <div className="font-semibold text-xs leading-tight">M-Pesa Till Setup</div>
                     <div className="text-[10px] text-gray-400">Store Till &amp; Daraja Keys</div>
@@ -235,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 rel="noopener noreferrer"
                 className="w-full px-2.5 py-1.5 text-left text-gray-200 hover:text-white hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2"
               >
-                <span className="material-symbols-outlined text-sm text-[#87c695]">gavel</span>
+                <span className="material-symbols-outlined text-sm text-[#11bf36]">gavel</span>
                 <div className="truncate">
                   <div className="font-semibold text-xs leading-tight">Legal &amp; Compliance Hub</div>
                   <div className="text-[10px] text-gray-400">Terms, Privacy &amp; Policies</div>
@@ -247,7 +246,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onClick={onOpenPlatformUpdate}
                   className="w-full px-2.5 py-1.5 text-left text-gray-200 hover:text-white hover:bg-[#14532d] rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-sm text-[#87c695]">system_update</span>
+                  <span className="material-symbols-outlined text-sm text-[#11bf36]">system_update</span>
                   <div className="truncate">
                     <div className="font-semibold text-xs leading-tight">Platform Cockpit</div>
                     <div className="text-[10px] text-gray-400">Staff PINs &amp; SQLite Backup</div>
@@ -258,7 +257,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
         </div>
 
-        {/* Streamlined Sign Out Trigger */}
         {onSignOut && (
           <button
             onClick={onSignOut}

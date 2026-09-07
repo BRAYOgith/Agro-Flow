@@ -52,8 +52,7 @@ export const CreditLedgerScreen: React.FC<CreditLedgerScreenProps> = ({
 
   return (
     <div className="space-y-6 pb-12 select-none">
-      {/* Metric Banner */}
-      <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white rounded-xl p-4 border border-[#dae2fd] border-t-4 border-t-[#11bf36] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <span className="text-[10px] uppercase font-semibold text-gray-500 tracking-wider">
             Total Farmer Receivables Book
@@ -71,35 +70,33 @@ export const CreditLedgerScreen: React.FC<CreditLedgerScreenProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search farmer or co-op..."
-              className="w-full pl-8 pr-3 py-1 text-xs bg-gray-50 border border-gray-200 rounded-lg"
+              className="w-full pl-8 pr-3 py-1 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#11bf36]"
             />
           </div>
         </div>
       </div>
 
-      {/* Filter Tabs */}
       <div className="flex items-center gap-2 text-xs">
         <button
           onClick={() => setFilterTab('All')}
-          className={`px-3 py-1.5 rounded-lg font-bold ${filterTab === 'All' ? 'bg-[#003b1b] text-white' : 'bg-gray-100 text-gray-700'}`}
+          className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${filterTab === 'All' ? 'bg-[#003b1b] text-white shadow-xs' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
         >
           All Smallholders ({farmers.length})
         </button>
         <button
           onClick={() => setFilterTab('Current')}
-          className={`px-3 py-1.5 rounded-lg font-bold ${filterTab === 'Current' ? 'bg-emerald-700 text-white' : 'bg-emerald-50 text-emerald-800'}`}
+          className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${filterTab === 'Current' ? 'bg-[#11bf36] text-white shadow-xs' : 'bg-[#eaf8ed] text-[#003b1b] hover:bg-[#d2f5db]'}`}
         >
           Current ({farmers.filter((f) => f.status === 'good').length})
         </button>
         <button
           onClick={() => setFilterTab('Overdue')}
-          className={`px-3 py-1.5 rounded-lg font-bold ${filterTab === 'Overdue' ? 'bg-red-700 text-white' : 'bg-red-50 text-red-700'}`}
+          className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${filterTab === 'Overdue' ? 'bg-red-700 text-white shadow-xs' : 'bg-red-50 text-red-700 hover:bg-red-100'}`}
         >
           Overdue ({farmers.filter((f) => f.status === 'overdue').length})
         </button>
       </div>
 
-      {/* Clean Main Table */}
       <div className="bg-white rounded-xl border border-[#dae2fd] shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -136,13 +133,13 @@ export const CreditLedgerScreen: React.FC<CreditLedgerScreenProps> = ({
                           setActiveFarmerForPayment(f);
                           setPaymentAmount(Math.min(10000, f.outstandingBalance));
                         }}
-                        className="px-3 py-1 bg-[#003b1b] text-[#b1f2be] rounded-lg text-xs font-bold"
+                        className="px-3 py-1 bg-[#11bf36] hover:bg-[#0ea82f] text-white rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer"
                       >
                         Collect / Pay
                       </button>
                       <button
                         onClick={() => onSendSmsReminder(f)}
-                        className="p-1 text-gray-500 hover:text-[#006a61]"
+                        className="p-1 text-gray-500 hover:text-[#11bf36] transition-colors cursor-pointer"
                         title="Send SMS"
                       >
                         <span className="material-symbols-outlined text-base">send_to_mobile</span>
@@ -156,7 +153,6 @@ export const CreditLedgerScreen: React.FC<CreditLedgerScreenProps> = ({
         </div>
       </div>
 
-      {/* Slide-Over Repayment Drawer */}
       {activeFarmerForPayment && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-end">
           <div className="bg-white w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
@@ -180,25 +176,25 @@ export const CreditLedgerScreen: React.FC<CreditLedgerScreenProps> = ({
                   type="number"
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(Number(e.target.value))}
-                  className="w-full p-2 bg-gray-50 border rounded font-mono font-bold text-sm"
+                  className="w-full p-2 bg-gray-50 border rounded font-mono font-bold text-sm focus:ring-2 focus:ring-[#11bf36] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-2">
-                <button onClick={() => setPaymentChannel('M-Pesa')} className={`py-1.5 rounded font-bold border ${paymentChannel === 'M-Pesa' ? 'bg-[#003b1b] text-white' : 'bg-gray-50'}`}>M-Pesa</button>
-                <button onClick={() => setPaymentChannel('Cash')} className={`py-1.5 rounded font-bold border ${paymentChannel === 'Cash' ? 'bg-[#003b1b] text-white' : 'bg-gray-50'}`}>Cash</button>
-                <button onClick={() => setPaymentChannel('Bank')} className={`py-1.5 rounded font-bold border ${paymentChannel === 'Bank' ? 'bg-[#003b1b] text-white' : 'bg-gray-50'}`}>Bank</button>
+                <button onClick={() => setPaymentChannel('M-Pesa')} className={`py-1.5 rounded font-bold border cursor-pointer ${paymentChannel === 'M-Pesa' ? 'bg-[#11bf36] text-white border-[#11bf36]' : 'bg-gray-50 hover:bg-gray-100'}`}>M-Pesa</button>
+                <button onClick={() => setPaymentChannel('Cash')} className={`py-1.5 rounded font-bold border cursor-pointer ${paymentChannel === 'Cash' ? 'bg-[#11bf36] text-white border-[#11bf36]' : 'bg-gray-50 hover:bg-gray-100'}`}>Cash</button>
+                <button onClick={() => setPaymentChannel('Bank')} className={`py-1.5 rounded font-bold border cursor-pointer ${paymentChannel === 'Bank' ? 'bg-[#11bf36] text-white border-[#11bf36]' : 'bg-gray-50 hover:bg-gray-100'}`}>Bank</button>
               </div>
 
               <div>
                 <label className="text-gray-600 block mb-1">Receipt Reference:</label>
-                <input type="text" value={receiptRef} onChange={(e) => setReceiptRef(e.target.value)} className="w-full p-1.5 bg-gray-50 border rounded font-mono" />
+                <input type="text" value={receiptRef} onChange={(e) => setReceiptRef(e.target.value)} className="w-full p-1.5 bg-gray-50 border rounded font-mono focus:ring-2 focus:ring-[#11bf36] focus:outline-none" />
               </div>
             </div>
 
             <div className="pt-4 border-t flex gap-2">
-              <button onClick={() => setActiveFarmerForPayment(null)} className="flex-1 py-2 bg-gray-100 rounded font-bold text-xs">Cancel</button>
-              <button onClick={handleConfirmPayment} className="flex-1 py-2 bg-[#003b1b] text-[#b1f2be] rounded font-bold text-xs">Confirm Repayment</button>
+              <button onClick={() => setActiveFarmerForPayment(null)} className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 rounded font-bold text-xs cursor-pointer">Cancel</button>
+              <button onClick={handleConfirmPayment} className="flex-1 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white rounded font-bold text-xs shadow-md transition-all cursor-pointer">Confirm Repayment</button>
             </div>
           </div>
         </div>

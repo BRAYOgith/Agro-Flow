@@ -34,11 +34,10 @@ export const ShiftCloseScreen: React.FC<ShiftCloseScreenProps> = ({
 
   return (
     <div className="space-y-6 pb-12 select-none">
-      {/* Top Banner */}
-      <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white rounded-xl p-4 border border-[#dae2fd] border-t-4 border-t-[#11bf36] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-bold text-sm text-[#131b2e]">
-            Shift Register & Daily Closeout (Z-Report)
+            Shift Register &amp; Daily Closeout (Z-Report)
           </h2>
           <p className="text-xs text-gray-500 mt-0.5">Cashier: Faith Wanjiru • Register POS-01</p>
         </div>
@@ -46,39 +45,38 @@ export const ShiftCloseScreen: React.FC<ShiftCloseScreenProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveSubTab('print')}
-            className="px-3.5 py-1.5 bg-[#eaedff] text-[#003b1b] rounded-lg text-xs font-bold"
+            className="px-3.5 py-1.5 bg-[#eaedff] text-[#003b1b] rounded-lg text-xs font-bold hover:bg-[#d2d9f4] transition-colors cursor-pointer"
           >
             Print 80mm Z-Report
           </button>
           <button
             onClick={handleFinalizeShift}
             disabled={shiftFinalized}
-            className="px-4 py-1.5 bg-[#003b1b] text-[#b1f2be] rounded-lg text-xs font-bold disabled:opacity-50"
+            className="px-4 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all shadow-md cursor-pointer"
           >
             {shiftFinalized ? 'Shift Locked ✓' : 'Lock Till & Finalize'}
           </button>
         </div>
       </div>
 
-      {/* Sub-Tabs */}
       <div className="flex border-b border-gray-200 gap-6 text-sm font-semibold">
         <button
           onClick={() => setActiveSubTab('reconciliation')}
-          className={`pb-3 relative transition-colors ${
-            activeSubTab === 'reconciliation' ? 'text-[#003b1b]' : 'text-gray-500'
+          className={`pb-3 relative transition-colors cursor-pointer ${
+            activeSubTab === 'reconciliation' ? 'text-[#11bf36]' : 'text-gray-500 hover:text-gray-800'
           }`}
         >
           Physical Cash Reconciliation
-          {activeSubTab === 'reconciliation' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#003b1b]"></span>}
+          {activeSubTab === 'reconciliation' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#11bf36]"></span>}
         </button>
         <button
           onClick={() => setActiveSubTab('daraja')}
-          className={`pb-3 relative transition-colors ${
-            activeSubTab === 'daraja' ? 'text-[#003b1b]' : 'text-gray-500'
+          className={`pb-3 relative transition-colors cursor-pointer ${
+            activeSubTab === 'daraja' ? 'text-[#11bf36]' : 'text-gray-500 hover:text-gray-800'
           }`}
         >
           Daraja M-Pesa API Audit Stream
-          {activeSubTab === 'daraja' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#003b1b]"></span>}
+          {activeSubTab === 'daraja' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#11bf36]"></span>}
         </button>
       </div>
 

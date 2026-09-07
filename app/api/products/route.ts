@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import { runMigrations } from '@/lib/db/migrations';
 import { seedInitialData } from '@/lib/db/seed';
 import { queryAll, execute } from '@/lib/db/index';
+import { requireAuth, assertRole, AuthError } from '@/lib/auth';
 import { ProductItem } from '@/src/types';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
+    await requireAuth(request);
     runMigrations();
     await seedInitialData();
 
@@ -44,12 +48,18 @@ export async function GET(request: Request) {
 
     return NextResponse.json(products);
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     const p: ProductItem = await request.json();
     const id = p.id || `prod-${Date.now()}`;
 
@@ -82,8 +92,17 @@ export async function POST(request: Request) {
       ]
     );
 
+    execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
+      user.username,
+      'PRODUCT_CREATED',
+      `Added new SKU ${p.name} (${id}) - Retail KES ${p.retailPrice} by ${user.username}.`,
+    ]);
+
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

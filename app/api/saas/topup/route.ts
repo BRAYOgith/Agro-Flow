@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
 import { queryOne, execute } from '@/lib/db/index';
+import { requireAuth, assertStoreAccess, assertRole, AuthError } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
     const body = await request.json();
-    const { storeId = 'store-01', amount, phone, simulateInstantSuccess = false } = body;
+    const { storeId = user.storeId || 'store-01', amount, phone, simulateInstantSuccess = false } = body;
+
+    // Prevent multi-tenant IDOR
+    assertStoreAccess(user, storeId);
 
     if (!amount || amount <= 0) {
       return NextResponse.json({ error: 'Valid payment amount is required' }, { status: 400 });
@@ -44,8 +51,15 @@ export async function POST(request: Request) {
 
     const checkoutRequestId = `ws_SAAS_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // If developer/demo test mode requested or local testing:
+    // Instant bypass strictly restricted to local development environment and admin accounts
     if (simulateInstantSuccess) {
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json(
+          { error: 'Simulated payments are strictly disabled in production environments.' },
+          { status: 403 }
+        );
+      }
+      assertRole(user, ['admin']);
       const receiptNumber = `QK${Math.floor(10000000 + Math.random() * 90000000)}`;
       const currentExpiry = new Date(store.licensed_until);
       const baseTime = currentExpiry.getTime() > Date.now() ? currentExpiry.getTime() : Date.now();
@@ -89,6 +103,9 @@ export async function POST(request: Request) {
       message: `M-Pesa STK Prompt sent to ${formattedPhone} for KES ${amount.toLocaleString()}. Enter your M-Pesa PIN on your phone.`,
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

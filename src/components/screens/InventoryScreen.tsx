@@ -24,7 +24,7 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; isError: boolean } | null>(null);
 
-  // Form state for adding new product
+  
   const [formData, setFormData] = useState({
     name: '',
     category: 'Crop Protection',
@@ -135,7 +135,6 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Top Header Controls */}
       <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-bold text-sm text-[#131b2e]">
@@ -147,20 +146,20 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
         <div className="flex items-center gap-2 text-xs">
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-3.5 py-1.5 bg-[#003b1b] text-[#b1f2be] rounded-lg font-bold flex items-center gap-1 hover:bg-[#14532d] transition-colors shadow-xs"
+            className="px-3.5 py-1.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white rounded-lg font-bold flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">add_circle</span>
             <span>Add New Product</span>
           </button>
           <button
             onClick={() => setCompactView(!compactView)}
-            className="px-3 py-1.5 bg-[#eaedff] text-[#003b1b] rounded-lg font-bold hover:bg-[#d8defa] transition-colors"
+            className="px-3.5 py-1.5 bg-[#eaedff] text-[#003b1b] rounded-lg font-bold hover:bg-[#d8defa] transition-colors cursor-pointer"
           >
             {compactView ? 'Switch to Full Regulatory Audit View' : 'Switch to Compact View'}
           </button>
           <button
             onClick={onReceiveStock}
-            className="px-3.5 py-1.5 bg-[#f2f3ff] text-[#006a61] border border-gray-200 rounded-lg font-bold flex items-center gap-1 hover:bg-gray-100 transition-colors"
+            className="px-3.5 py-1.5 bg-[#f2f3ff] text-[#006a61] border border-gray-200 rounded-lg font-bold flex items-center gap-1 hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-sm">add_box</span>
             <span>Receive Stock (GRN)</span>
@@ -173,7 +172,7 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
           className={`p-3 rounded-xl border text-xs font-semibold flex items-center justify-between ${
             statusMessage.isError
               ? 'bg-red-50 text-red-800 border-red-200'
-              : 'bg-emerald-50 text-emerald-900 border-emerald-200'
+              : 'bg-[#eaf8ed] text-[#003b1b] border-[#11bf36]/30'
           }`}
         >
           <span>{statusMessage.text}</span>
@@ -183,13 +182,12 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
         </div>
       )}
 
-      {/* Filter Tabs */}
       <div className="bg-white rounded-xl p-3 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setFilterType('All')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
-              filterType === 'All' ? 'bg-[#003b1b] text-white' : 'bg-gray-100 text-gray-700'
+            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+              filterType === 'All' ? 'bg-[#11bf36] text-white shadow-xs' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             All Products ({products.length})
@@ -224,7 +222,6 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
         </div>
       </div>
 
-      {/* Main Stock Table */}
       <div className="bg-white rounded-xl border border-[#dae2fd] shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -293,7 +290,6 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
         </div>
       </div>
 
-      {/* Modal: Add New Regulated Product */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 border border-[#dae2fd] max-h-[90vh] overflow-y-auto">
@@ -474,7 +470,7 @@ export const InventoryScreen: React.FC<InventoryScreenProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-[#003b1b] hover:bg-[#14532d] text-[#b1f2be] font-bold rounded-lg flex items-center gap-1.5 disabled:opacity-60 shadow-xs"
+                  className="px-5 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold rounded-lg flex items-center gap-1.5 disabled:opacity-60 shadow-md cursor-pointer transition-all"
                 >
                   <span className="material-symbols-outlined text-sm">save</span>
                   <span>{isSubmitting ? 'Adding...' : 'Save & Stock SKU'}</span>

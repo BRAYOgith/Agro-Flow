@@ -72,12 +72,11 @@ export const PosScreen: React.FC<PosScreenProps> = ({
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-6.5rem)] select-none">
-      {/* Left 65%: Catalog & Search */}
       <div className="flex-1 flex flex-col bg-white rounded-xl border border-[#dae2fd] shadow-xs overflow-hidden">
-        {/* Terminal Header Bar */}
         <div className="bg-[#f2f3ff] p-3 border-b border-[#dae2fd] flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-[#003b1b] bg-[#b1f2be] px-2 py-0.5 rounded text-[11px]">
+            <span className="font-bold text-white bg-[#11bf36] px-2.5 py-0.5 rounded text-[11px] shadow-xs flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
               POS-01 ONLINE
             </span>
           </div>
@@ -85,11 +84,10 @@ export const PosScreen: React.FC<PosScreenProps> = ({
           <div className="flex items-center gap-2 text-[10px] font-mono font-semibold text-gray-600">
             <span className="bg-white px-1.5 py-0.5 rounded border border-gray-200">[F1] Clear</span>
             <span className="bg-white px-1.5 py-0.5 rounded border border-gray-200">[F3] Search</span>
-            <span className="bg-[#006a61] text-white px-2 py-0.5 rounded">[F9] Pay</span>
+            <span className="bg-[#11bf36] text-white px-2 py-0.5 rounded font-bold">[F9] Pay</span>
           </div>
         </div>
 
-        {/* Search & Categories */}
         <div className="p-3 border-b border-[#dae2fd] space-y-2.5">
           <div className="relative">
             <span className="material-symbols-outlined absolute left-3 top-2.5 text-gray-400 text-lg">
@@ -100,19 +98,18 @@ export const PosScreen: React.FC<PosScreenProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Scan barcode or search SKU, active ingredient, PCPB reg..."
-              className="w-full pl-10 pr-4 py-2 text-xs bg-[#faf8ff] border border-[#c0c9be] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#006a61] focus:bg-white"
+              className="w-full pl-10 pr-4 py-2 text-xs bg-[#faf8ff] border border-[#c0c9be] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#11bf36] focus:border-[#11bf36] focus:bg-white transition-all"
             />
           </div>
 
-          {/* Category Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-lg whitespace-nowrap text-xs font-medium transition-colors ${
+                className={`px-3 py-1 rounded-lg whitespace-nowrap text-xs font-bold transition-colors cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-[#003b1b] text-white shadow-xs'
+                    ? 'bg-[#11bf36] text-white shadow-xs'
                     : 'bg-[#eaedff] text-[#131b2e] hover:bg-[#dae2fd]'
                 }`}
               >
@@ -122,7 +119,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
           </div>
         </div>
 
-        {/* Streamlined Clean Product Grid */}
         <div className="flex-1 p-3 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 auto-rows-max bg-[#faf8ff]/50">
           {filteredProducts.map((p) => {
             const inCart = cart.find((item) => item.product.id === p.id);
@@ -131,14 +127,14 @@ export const PosScreen: React.FC<PosScreenProps> = ({
             return (
               <div
                 key={p.id}
-                className="bg-white rounded-xl p-3 border border-[#dae2fd] shadow-xs hover:border-[#006a61] transition-all flex flex-col justify-between"
+                className="bg-white rounded-xl p-3 border border-[#dae2fd] shadow-xs hover:border-[#11bf36] transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between text-[10px] text-gray-500">
                     <span>{p.category}</span>
                     <button
                       onClick={() => setActiveInfoProduct(p)}
-                      className="text-gray-400 hover:text-[#006a61] p-0.5"
+                      className="text-gray-400 hover:text-[#11bf36] p-0.5"
                       title="View Agronomic Info"
                     >
                       <span className="material-symbols-outlined text-sm">info</span>
@@ -162,10 +158,10 @@ export const PosScreen: React.FC<PosScreenProps> = ({
 
                   <button
                     onClick={() => onAddToCart(p)}
-                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       inCart
-                        ? 'bg-[#14532d] text-[#87c695]'
-                        : 'bg-[#b1f2be] text-[#00210d] hover:bg-[#87c695]'
+                        ? 'bg-[#11bf36]/20 text-[#11bf36] border border-[#11bf36]/40'
+                        : 'bg-[#11bf36] text-white hover:bg-[#0ea82f]'
                     }`}
                   >
                     {inCart ? `+ (${inCart.quantity})` : 'Add'}
@@ -177,9 +173,7 @@ export const PosScreen: React.FC<PosScreenProps> = ({
         </div>
       </div>
 
-      {/* Right 35%: Clean Cart & Instant Checkout Launcher */}
       <div className="w-full lg:w-80 flex flex-col bg-white rounded-xl border border-[#dae2fd] shadow-sm overflow-hidden shrink-0">
-        {/* Cart Header */}
         <div className="p-3 bg-[#f2f3ff] border-b border-[#dae2fd] flex items-center justify-between">
           <span className="font-bold text-xs text-[#131b2e] flex items-center gap-1.5">
             <span className="material-symbols-outlined text-base text-[#006a61]">shopping_cart</span>
@@ -192,7 +186,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
           )}
         </div>
 
-        {/* Cart Items List */}
         <div className="flex-1 p-3 overflow-y-auto divide-y divide-gray-100">
           {cart.length === 0 ? (
             <div className="h-48 flex flex-col items-center justify-center text-center text-gray-400">
@@ -237,7 +230,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
           )}
         </div>
 
-        {/* Clean Cart Summary & Single Checkout Action */}
         <div className="p-3 bg-[#faf8ff] border-t border-[#dae2fd] space-y-3">
           <div className="flex justify-between text-base font-extrabold text-[#003b1b]">
             <span>Total Payable</span>
@@ -247,7 +239,7 @@ export const PosScreen: React.FC<PosScreenProps> = ({
           <button
             onClick={() => setShowCheckoutModal(true)}
             disabled={cart.length === 0}
-            className="w-full py-3 bg-[#003b1b] text-[#b1f2be] hover:bg-[#14532d] disabled:opacity-50 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+            className="w-full py-3.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white disabled:opacity-50 font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span className="material-symbols-outlined text-base">payments</span>
             <span>Proceed to Payment Checkout [F9]</span>
@@ -255,7 +247,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
         </div>
       </div>
 
-      {/* Product Detail Info Modal */}
       {activeInfoProduct && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-sm w-full p-4 shadow-2xl space-y-3 text-xs">
@@ -278,7 +269,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
         </div>
       )}
 
-      {/* Clean 2-Step Checkout Modal */}
       {showCheckoutModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 text-xs animate-in zoom-in-95 duration-200">
@@ -287,7 +277,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
               <button onClick={() => setShowCheckoutModal(false)} className="text-gray-400 font-bold">✕</button>
             </div>
 
-            {/* Farmer Selection */}
             <div className="space-y-1">
               <label className="font-semibold text-gray-700 block">Customer Account:</label>
               <select
@@ -307,7 +296,6 @@ export const PosScreen: React.FC<PosScreenProps> = ({
               </select>
             </div>
 
-            {/* Payment Method Selector */}
             <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => setPaymentMethod('M-Pesa')}
@@ -390,9 +378,10 @@ export const PosScreen: React.FC<PosScreenProps> = ({
             ) : (
               <button
                 onClick={handleComplete}
-                className="w-full py-3 bg-[#003b1b] text-[#b1f2be] font-bold text-xs rounded-xl shadow-md cursor-pointer hover:bg-[#14532d]"
+                className="w-full py-3.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold text-xs rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
-                Complete Sale & Print 80mm Receipt
+                <span className="material-symbols-outlined text-base">print</span>
+                <span>Complete Sale &amp; Print 80mm Receipt</span>
               </button>
             )}
           </div>

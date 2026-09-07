@@ -29,3 +29,7 @@ data/*
 # OS Generated
 .DS_Store
 Thumbs.db
+
+# Media Recordings
+*.mp4
+media/*.mp4

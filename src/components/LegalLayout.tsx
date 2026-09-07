@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { BreadcrumbStructuredData } from '@/src/components/StructuredData';
 
 interface LegalLayoutProps {
   title: string;
@@ -29,9 +30,15 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
     { id: 'payments-policy', label: 'M-Pesa & Payment Terms', href: '/payments-policy', icon: 'payments' },
   ];
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Legal & Compliance Hub', path: '/legal' },
+    ...(activeDoc !== 'legal' ? [{ name: title }] : []),
+  ];
+
   return (
     <div className="min-h-screen bg-[#faf8ff] text-[#131b2e] flex flex-col antialiased">
-      {/* Top Header */}
+      <BreadcrumbStructuredData crumbs={breadcrumbs} />
       <header className="bg-[#003b1b] text-white sticky top-0 z-30 shadow-md border-b border-[#14532d]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -42,10 +49,10 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
                 className="w-8 h-8 object-contain bg-white rounded-lg p-1"
               />
               <div>
-                <span className="font-playfair font-bold text-lg tracking-tight text-white group-hover:text-[#b1f2be] transition-colors">
+                <span className="font-playfair font-bold text-lg tracking-tight text-white group-hover:text-[#11bf36] transition-colors">
                   AgroFlow
                 </span>
-                <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-[#87c695] ml-2">
+                <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-[#11bf36] ml-2">
                   Legal & Compliance
                 </span>
               </div>
@@ -55,14 +62,14 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
           <div className="flex items-center gap-3 text-xs">
             <button
               onClick={() => window.print()}
-              className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-[#14532d] hover:bg-[#1b6b3b] text-[#b1f2be] font-semibold rounded-lg border border-[#87c695]/30 transition-colors cursor-pointer"
+              className="hidden sm:flex items-center gap-1 px-3 py-1.5 bg-[#14532d] hover:bg-[#1b6b3b] text-gray-200 font-semibold rounded-lg border border-[#14532d] transition-colors cursor-pointer"
             >
-              <span className="material-symbols-outlined text-sm">print</span>
+              <span className="material-symbols-outlined text-sm text-[#11bf36]">print</span>
               <span>Print Document</span>
             </button>
             <Link
               href="/"
-              className="px-3.5 py-1.5 bg-[#b1f2be] hover:bg-[#87c695] text-[#00210d] font-bold rounded-lg transition-colors flex items-center gap-1 shadow-xs"
+              className="px-3.5 py-1.5 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold rounded-lg transition-colors flex items-center gap-1 shadow-md"
             >
               <span className="material-symbols-outlined text-sm">arrow_back</span>
               <span>Back to App</span>
@@ -71,12 +78,10 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
         </div>
       </header>
 
-      {/* Main Layout Body */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Sticky Legal Navigation */}
         <aside className="lg:col-span-3">
           <div className="sticky top-20 bg-white rounded-xl border border-[#dae2fd] shadow-xs p-4 space-y-3">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 pb-2 border-b border-gray-100">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-[#11bf36] pb-2 border-b border-gray-100">
               Regulatory Instruments
             </div>
             <nav className="space-y-1">
@@ -88,11 +93,11 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
                     href={doc.href}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-[#003b1b] text-white shadow-xs'
+                        ? 'bg-[#002410] border-l-4 border-[#11bf36] text-white shadow-xs'
                         : 'text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <span className={`material-symbols-outlined text-base ${isActive ? 'text-[#b1f2be]' : 'text-gray-500'}`}>
+                    <span className={`material-symbols-outlined text-base ${isActive ? 'text-[#11bf36]' : 'text-gray-500'}`}>
                       {doc.icon}
                     </span>
                     <span className="truncate">{doc.label}</span>
@@ -101,9 +106,9 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
               })}
             </nav>
 
-            <div className="pt-3 border-t border-gray-100 text-[11px] text-gray-500 space-y-1.5">
+            <div className="pt-3 border-t border-gray-100 space-y-2">
               <div className="flex items-center gap-1.5 font-semibold text-gray-700">
-                <span className="material-symbols-outlined text-sm text-emerald-700">verified_user</span>
+                <span className="material-symbols-outlined text-sm text-[#11bf36]">verified_user</span>
                 <span>Kenyan Law Compliance</span>
               </div>
               <p className="text-[10px] leading-relaxed text-gray-600">
@@ -113,10 +118,8 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
           </div>
         </aside>
 
-        {/* Legal Document Content */}
         <main className="lg:col-span-9">
           <article className="bg-white rounded-2xl border border-[#dae2fd] shadow-xs p-6 sm:p-10 space-y-6">
-            {/* Document Header */}
             <div className="border-b border-gray-200 pb-5 space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
                 <span>Version: <strong className="font-mono text-gray-800">{version}</strong></span>
@@ -126,17 +129,16 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
               <h1 className="font-playfair text-2xl sm:text-3xl font-bold text-[#131b2e] tracking-tight">
                 {title}
               </h1>
+              <span className="w-12 h-1 bg-[#11bf36] rounded-full block"></span>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                 {subtitle}
               </p>
             </div>
 
-            {/* Document Body */}
             <div className="prose prose-sm max-w-none text-xs sm:text-sm text-gray-700 leading-relaxed space-y-6">
               {children}
             </div>
 
-            {/* Document Sign-off / Footer */}
             <div className="border-t border-gray-200 pt-6 mt-8 text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-3">
               <div>
                 AgroFlow Legal & Compliance Unit • Kerugoya Central Hub, Kirinyaga County, Kenya
@@ -149,7 +151,6 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
         </main>
       </div>
 
-      {/* Page Footer */}
       <footer className="bg-[#002b13] text-[#87c695] text-xs py-5 border-t border-[#14532d] mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">

@@ -22,43 +22,41 @@ export const SuppliersScreen: React.FC<SuppliersScreenProps> = ({
 
   return (
     <div className="space-y-6 pb-12 select-none">
-      {/* Banner */}
-      <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white rounded-xl p-4 border border-[#dae2fd] border-t-4 border-t-[#11bf36] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-bold text-sm text-[#131b2e]">
             Inward Goods Delivery Dispatch (#GRN-2024-089)
           </h2>
-          <p className="text-xs text-gray-500 mt-0.5">Inward Stock & Purchase Orders</p>
+          <p className="text-xs text-gray-500 mt-0.5">Inward Stock &amp; Purchase Orders</p>
         </div>
 
         <button
           onClick={handleCommit}
           disabled={grnCommitted}
-          className="px-4 py-1.5 bg-[#003b1b] text-[#b1f2be] rounded-lg text-xs font-bold disabled:opacity-50"
+          className="px-4 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all shadow-md cursor-pointer"
         >
           {grnCommitted ? 'GRN Inward Committed ✓' : 'Commit GRN to Inventory'}
         </button>
       </div>
 
-      {/* Sub-Tabs */}
       <div className="flex border-b border-gray-200 gap-6 text-sm font-semibold">
         <button
           onClick={() => setActiveTab('manifest')}
-          className={`pb-3 relative transition-colors ${
-            activeTab === 'manifest' ? 'text-[#003b1b]' : 'text-gray-500'
+          className={`pb-3 relative transition-colors cursor-pointer ${
+            activeTab === 'manifest' ? 'text-[#11bf36]' : 'text-gray-500 hover:text-gray-800'
           }`}
         >
           Inward Delivery Manifest
-          {activeTab === 'manifest' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#003b1b]"></span>}
+          {activeTab === 'manifest' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#11bf36]"></span>}
         </button>
         <button
           onClick={() => setActiveTab('pcpb')}
-          className={`pb-3 relative transition-colors ${
-            activeTab === 'pcpb' ? 'text-[#003b1b]' : 'text-gray-500'
+          className={`pb-3 relative transition-colors cursor-pointer ${
+            activeTab === 'pcpb' ? 'text-[#11bf36]' : 'text-gray-500 hover:text-gray-800'
           }`}
         >
           PCPB 2D Serialization Validation
-          {activeTab === 'pcpb' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#003b1b]"></span>}
+          {activeTab === 'pcpb' && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#11bf36]"></span>}
         </button>
       </div>
 

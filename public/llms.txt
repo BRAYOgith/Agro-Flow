@@ -1,0 +1,31 @@
+# AgroFlow - Agribusiness Operating System
+
+> AgroFlow is an enterprise operations cockpit, POS counter, FEFO inventory batch tracking system, and smallholder farmer credit ledger tailored for agrovets and agricultural input stockists across East Africa (Kenya, Uganda, Tanzania, Rwanda).
+
+## Core Capabilities
+- **POS Counter & Express Checkout**: Barcode scanning, fractional unit sales (weighing scales for repackaged fertilizer and seeds), cash drawer balancing, and instant M-Pesa Daraja STK Push & C2B settlement.
+- **Batch Inventory & Expiry Management (FEFO)**: First-Expired, First-Out dispensation for agrochemicals, seed varieties, and veterinary supplies with statutory manufacturer recall support.
+- **Smallholder Credit Ledger & Debt Recovery**: Fair credit extension ledger, non-predatory balance monitoring, and automated Africa's Talking SMS repayment notices.
+- **Agronomic Field Advisory**: Acreage-based dosage calculations, pre-harvest intervals (PHI), re-entry intervals (REI), and crop protection guidance.
+- **Offline-First Resilience**: Local SQLite database engine with automatic background cloud sync when internet connectivity drops.
+
+## Regulatory & Legal Framework (Kenya)
+- **PCPB & KEPHIS Compliance**: Regulated pursuant to the Pest Control Products Act (Cap. 346) and Seeds and Plant Varieties Act (Cap. 326).
+- **Data Protection**: Complies with Kenya Data Protection Act, 2019 (KDPA) and ODPC guidelines for farmer KYC data and cashier audit logging.
+- **Consumer Protection & Fair Credit**: Non-predatory credit rules adhering to the Consumer Protection Act, 2012 and Co-operative Societies Act (Cap. 490).
+- **National Payments System**: Central Bank of Kenya (CBK) compliant settlement with Safaricom Daraja STK push and C2B APIs.
+
+## Canonical Documentation & Policy URLs
+- Main Platform: https://agroflow.co.ke
+- Regulatory & Legal Hub: https://agroflow.co.ke/legal
+- Smallholder Fair Credit Policy: https://agroflow.co.ke/credit-policy
+- Agrochemical Dispensation & PCPB Policy: https://agroflow.co.ke/regulatory
+- M-Pesa & Payment Settlement Terms: https://agroflow.co.ke/payments-policy
+- Data Privacy & Protection: https://agroflow.co.ke/privacy
+- Master Terms of Service: https://agroflow.co.ke/terms
+
+## Contact & Entity Information
+- **Operating Entity**: AgroFlow Agri-OS Ltd
+- **Headquarters**: Kerugoya Central Hub, Kirinyaga County, Kenya
+- **Email**: support@agroflow.co.ke / privacy@agroflow.co.ke
+- **Regions Served**: Kenya, Uganda, Tanzania, Rwanda

@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import { runMigrations } from '@/lib/db/migrations';
 import { seedInitialData } from '@/lib/db/seed';
 import { queryAll, execute } from '@/lib/db/index';
+import { requireAuth, AuthError } from '@/lib/auth';
 import { FarmerRecord } from '@/src/types';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
+    await requireAuth(request);
     runMigrations();
     await seedInitialData();
 
@@ -43,12 +47,16 @@ export async function GET(request: Request) {
     const farmers = queryAll<FarmerRecord>(sql, params);
     return NextResponse.json(farmers);
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
     const f: FarmerRecord = await request.json();
     const id = f.id || `FARM-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -78,8 +86,17 @@ export async function POST(request: Request) {
       ]
     );
 
+    execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
+      user.username,
+      'FARMER_RECORD_CREATED',
+      `Registered new farmer ${f.name} (${id}) under cooperative ${f.cooperative} by ${user.username}.`,
+    ]);
+
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

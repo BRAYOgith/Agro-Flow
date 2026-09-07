@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { runMigrations } from '@/lib/db/migrations';
 import { queryAll, queryOne, execute, execScript } from '@/lib/db/index';
+import { requireAuth, assertRole, AuthError } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
@@ -8,6 +11,9 @@ export async function GET(request: Request) {
     const action = searchParams.get('action');
 
     if (action === 'backup') {
+      const user = await requireAuth(request);
+      assertRole(user, ['admin']);
+
       const products = queryAll('SELECT * FROM products;');
       const farmers = queryAll('SELECT * FROM farmers;');
       const transactions = queryAll('SELECT * FROM transactions;');
@@ -35,11 +41,17 @@ export async function GET(request: Request) {
     }
 
     if (action === 'audit_logs') {
+      const user = await requireAuth(request);
+      assertRole(user, ['admin', 'manager']);
+
       const logs = queryAll('SELECT * FROM audit_logs ORDER BY id DESC LIMIT 50;');
       return NextResponse.json(logs);
     }
 
-    // Default: Return system health & migration status
+    // Default: Return system health & migration status (admin / manager)
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     const migrationResult = runMigrations();
     const versionRow = queryOne<{ value: string }>('SELECT value FROM system_info WHERE key = ?;', ['version']);
     const migrations = queryAll('SELECT * FROM schema_migrations ORDER BY id DESC;');
@@ -53,19 +65,25 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin']);
+
     const body = await request.json();
     const { action, backupData } = body;
 
     if (action === 'run_migrations') {
       const result = runMigrations();
       execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
-        'System Admin',
+        user.username,
         'PLATFORM_MIGRATIONS_RUN',
         `Applied ${result.applied.length} pending schema updates. Total: ${result.total}`,
       ]);
@@ -108,9 +126,9 @@ export async function POST(request: Request) {
       }
 
       execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
-        'System Admin',
+        user.username,
         'DATABASE_RESTORED_FROM_BACKUP',
-        `Restored database snapshot from ${backupData.timestamp || 'backup file'}.`,
+        `Restored database snapshot from ${backupData.timestamp || 'backup file'} by ${user.username}.`,
       ]);
 
       return NextResponse.json({ success: true, message: 'System state restored successfully' });
@@ -118,6 +136,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -3,14 +3,23 @@ import { runMigrations } from '@/lib/db/migrations';
 import { seedInitialData } from '@/lib/db/seed';
 import { queryOne, execute } from '@/lib/db/index';
 import { encryptSecret, decryptSecret, maskSecret } from '@/lib/crypto';
+import { requireAuth, assertRole, assertStoreAccess, AuthError } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     runMigrations();
     await seedInitialData();
 
     const { searchParams } = new URL(request.url);
-    const storeId = searchParams.get('storeId') || 'store-01';
+    const storeId = searchParams.get('storeId') || user.storeId || 'store-01';
+
+    // Prevent multi-tenant IDOR: Users can only read their assigned store
+    assertStoreAccess(user, storeId);
 
     const store = queryOne<any>(
       `SELECT daraja_type, daraja_shortcode, daraja_consumer_key_encrypted, daraja_consumer_secret_encrypted, daraja_passkey_encrypted, daraja_active
@@ -38,15 +47,21 @@ export async function GET(request: Request) {
       isConfigured: Boolean(store.daraja_active && store.daraja_shortcode),
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     const body = await request.json();
     const {
-      storeId = 'store-01',
+      storeId = user.storeId || 'store-01',
       darajaType = 'BuyGoods',
       shortcode,
       consumerKey,
@@ -55,17 +70,21 @@ export async function POST(request: Request) {
       pin,
     } = body;
 
+    // Prevent multi-tenant IDOR
+    assertStoreAccess(user, storeId);
+
     if (!pin) {
       return NextResponse.json({ error: 'Manager PIN authorization required to modify M-Pesa Till credentials' }, { status: 400 });
     }
 
-    // Verify Manager PIN
-    const manager = queryOne<{ pin: string }>(
-      `SELECT pin FROM users WHERE role = 'manager' LIMIT 1;`
+    // Verify PIN specifically for the currently authenticated manager
+    const currentUser = queryOne<{ pin: string }>(
+      'SELECT pin FROM users WHERE id = ?;',
+      [user.id]
     );
 
-    if (!manager || manager.pin !== pin) {
-      return NextResponse.json({ error: 'Invalid Manager PIN authorization' }, { status: 403 });
+    if (!currentUser || currentUser.pin !== pin) {
+      return NextResponse.json({ error: 'Invalid Manager PIN authorization for your account' }, { status: 403 });
     }
 
     if (!shortcode || shortcode.trim() === '') {
@@ -106,6 +125,12 @@ export async function POST(request: Request) {
       ]
     );
 
+    execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
+      user.username,
+      'DARAJA_CREDENTIALS_CONFIGURED',
+      `Configured ${darajaType} Till ${shortcode.trim()} for store ${storeId} by ${user.username}.`,
+    ]);
+
     return NextResponse.json({
       success: true,
       message: `M-Pesa Till ${shortcode} credentials encrypted and secured successfully.`,
@@ -113,6 +138,9 @@ export async function POST(request: Request) {
       shortcode: shortcode.trim(),
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -24,7 +24,7 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; isError: boolean } | null>(null);
 
-  // Form state for new farmer registration
+  
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -155,7 +155,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </div>
       )}
 
-      {/* Active Farmer Switcher & Action Bar */}
       <div className="bg-white rounded-xl p-4 border border-[#dae2fd] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <span className="text-xs font-semibold text-gray-500">Active Smallholder Account:</span>
@@ -175,7 +174,7 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         <div className="flex items-center gap-2 text-xs">
           <button
             onClick={() => setShowAddFarmerModal(true)}
-            className="px-3.5 py-2 bg-[#003b1b] text-[#b1f2be] font-bold rounded-lg hover:bg-[#14532d] flex items-center gap-1.5 shadow-xs transition-colors"
+            className="px-3.5 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold rounded-lg flex items-center gap-1.5 shadow-md transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span className="material-symbols-outlined text-sm">person_add</span>
             <span>Register New Farmer</span>
@@ -195,7 +194,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </div>
       </div>
 
-      {/* Sub-Navigation Tabs */}
       <div className="flex border-b border-gray-200 gap-6 text-sm font-semibold">
         <button
           onClick={() => setActiveTab('profile')}
@@ -226,7 +224,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </button>
       </div>
 
-      {/* Tab 1: Profile & Summary (Acreage and Soil pH completely removed) */}
       {activeTab === 'profile' && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 border border-[#dae2fd] shadow-xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
@@ -253,7 +250,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
               </div>
             </div>
 
-            {/* Financial & Account Metrics */}
             <div className="grid grid-cols-3 gap-3 shrink-0">
               <div className="bg-[#f2f3ff] p-3 rounded-xl border border-[#dae2fd] text-center min-w-[110px]">
                 <span className="text-[10px] uppercase font-bold text-gray-500">Credit Limit</span>
@@ -276,7 +272,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
             </div>
           </div>
 
-          {/* Account Details & Notes */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white rounded-xl p-5 border border-[#dae2fd] shadow-xs space-y-3">
               <h3 className="font-bold text-sm text-[#131b2e]">Customer KYC & Cooperative Ties</h3>
@@ -314,7 +309,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </div>
       )}
 
-      {/* Tab 2: Phenology & Prescriptions */}
       {activeTab === 'advisory' && (
         <div className="space-y-6">
           <div className="bg-white rounded-xl p-5 border border-[#dae2fd] shadow-xs space-y-4">
@@ -371,7 +365,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </div>
       )}
 
-      {/* Tab 3: Complete Farmer Directory */}
       {activeTab === 'directory' && (
         <div className="bg-white rounded-xl border border-[#dae2fd] shadow-xs overflow-hidden">
           <div className="p-4 border-b border-gray-200 flex items-center justify-between">
@@ -443,7 +436,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </div>
       )}
 
-      {/* Modal: Register New Farmer */}
       {showAddFarmerModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-[#dae2fd]">
@@ -579,7 +571,7 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 bg-[#003b1b] hover:bg-[#14532d] text-[#b1f2be] font-bold rounded-lg flex items-center gap-1.5 disabled:opacity-60"
+                  className="px-5 py-2 bg-[#11bf36] hover:bg-[#0ea82f] text-white font-bold rounded-lg flex items-center gap-1.5 disabled:opacity-60 shadow-md cursor-pointer transition-all"
                 >
                   <span className="material-symbols-outlined text-sm">how_to_reg</span>
                   <span>{isSubmitting ? 'Registering...' : 'Save & Register Farmer'}</span>
@@ -590,7 +582,6 @@ export const FarmersScreen: React.FC<FarmersScreenProps> = ({
         </div>
       )}
 
-      {/* Tank Mix Modal */}
       {showTankMixModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-md w-full p-4 shadow-2xl space-y-3 text-xs">

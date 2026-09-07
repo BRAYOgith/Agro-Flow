@@ -28,11 +28,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'PIN is required' }, { status: 400 });
     }
 
-    // Check if any manager user matches PIN or default 4920 / 1234
-    const user = queryOne<{ id: string; name: string }>('SELECT id, name FROM users WHERE pin = ?;', [pin]);
+    // Check if any manager or admin user matches the provided authorization PIN
+    const user = queryOne<{ id: string; name: string; role: string }>(
+      `SELECT id, name, role FROM users WHERE pin = ? AND (role = 'manager' OR role = 'admin');`,
+      [pin]
+    );
 
-    if (user || pin === '4920' || pin === '1234') {
-      return NextResponse.json({ valid: true, managerName: user?.name || 'John Mwangi' });
+    if (user) {
+      return NextResponse.json({ valid: true, managerName: user.name });
     }
 
     return NextResponse.json({ valid: false, error: 'Invalid Manager Authorization PIN' }, { status: 401 });

@@ -2,15 +2,22 @@ import { NextResponse } from 'next/server';
 import { runMigrations } from '@/lib/db/migrations';
 import { seedInitialData } from '@/lib/db/seed';
 import { queryOne, execute } from '@/lib/db/index';
-import bcrypt from 'bcryptjs';
+import { requireAuth, assertRole, assertStoreAccess, AuthError } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
+    const user = await requireAuth(request);
+
     runMigrations();
     await seedInitialData();
 
     const { searchParams } = new URL(request.url);
-    const storeId = searchParams.get('storeId') || 'store-01';
+    const storeId = searchParams.get('storeId') || user.storeId || 'store-01';
+
+    // Prevent multi-tenant IDOR
+    assertStoreAccess(user, storeId);
 
     const store = queryOne<any>(
       `SELECT store_id, store_name, owner_phone, daily_rate, wallet_balance, licensed_until, subscription_status, daraja_type, daraja_shortcode, daraja_active
@@ -76,6 +83,9 @@ export async function GET(request: Request) {
       },
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -86,20 +96,27 @@ export async function GET(request: Request) {
  */
 export async function PUT(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     const body = await request.json();
-    const { storeId = 'store-01', dailyRate, pin, ownerPhone, storeName } = body;
+    const { storeId = user.storeId || 'store-01', dailyRate, pin, ownerPhone, storeName } = body;
+
+    // Prevent multi-tenant IDOR
+    assertStoreAccess(user, storeId);
 
     if (!pin) {
       return NextResponse.json({ error: 'Manager PIN is required to modify subscription settings' }, { status: 400 });
     }
 
-    // Verify Manager PIN
-    const manager = queryOne<{ pin: string }>(
-      `SELECT pin FROM users WHERE role = 'manager' LIMIT 1;`
+    // Verify PIN specifically for the currently authenticated manager
+    const currentUser = queryOne<{ pin: string }>(
+      'SELECT pin FROM users WHERE id = ?;',
+      [user.id]
     );
 
-    if (!manager || manager.pin !== pin) {
-      return NextResponse.json({ error: 'Invalid Manager PIN authorization' }, { status: 403 });
+    if (!currentUser || currentUser.pin !== pin) {
+      return NextResponse.json({ error: 'Invalid Manager PIN authorization for your account' }, { status: 403 });
     }
 
     const updates: string[] = [];
@@ -132,11 +149,20 @@ export async function PUT(request: Request) {
       params
     );
 
+    execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
+      user.username,
+      'STORE_SUBSCRIPTION_UPDATED',
+      `Updated settings for store ${storeId}: daily rate KES ${dailyRate || 'unchanged'} by ${user.username}.`,
+    ]);
+
     return NextResponse.json({
       success: true,
       message: `Store subscription updated successfully. Daily rate configured to KES ${dailyRate || 'unchanged'}.`,
     });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

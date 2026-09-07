@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import { runMigrations } from '@/lib/db/migrations';
 import { seedInitialData } from '@/lib/db/seed';
 import { queryAll, execute } from '@/lib/db/index';
+import { requireAuth, assertRole, AuthError } from '@/lib/auth';
 import { InwardLineItem } from '@/src/types';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: Request) {
   try {
+    await requireAuth(request);
     runMigrations();
     await seedInitialData();
 
@@ -16,12 +20,18 @@ export async function GET() {
     }));
     return NextResponse.json(lines);
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const user = await requireAuth(request);
+    assertRole(user, ['admin', 'manager']);
+
     // Commit GRN to inventory
     // 1. Keep inward line shortfall flags intact for audit records
     // 2. Increment product stock count
@@ -31,13 +41,16 @@ export async function POST(request: Request) {
     execute(`UPDATE products SET stockCount = stockCount + 20 WHERE name LIKE '%Acelan%';`);
 
     execute('INSERT INTO audit_logs (username, action, details) VALUES (?, ?, ?);', [
-      'John Mwangi',
+      user.name || user.username,
       'GRN_COMMITTED_TO_INVENTORY',
-      'GRN-2024-089 138 Verified units added to dispensary stock ledger. Twiga Chemical AP adjusted.',
+      `GRN-2024-089 138 Verified units added to dispensary stock ledger by ${user.name || user.username}.`,
     ]);
 
     return NextResponse.json({ success: true, message: 'GRN committed to dispensary stock ledger' });
   } catch (error: any) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

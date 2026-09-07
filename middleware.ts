@@ -1,7 +1,50 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+const JWT_SECRET = process.env.JWT_SECRET || 'agroflow-enterprise-secret-key-2026';
+
+async function verifyToken(token: string): Promise<any | null> {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+
+    const [headerB64, payloadB64, signatureB64] = parts;
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(JWT_SECRET),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+
+    const base64 = signatureB64.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = base64.length % 4;
+    const padded = pad ? base64 + '='.repeat(4 - pad) : base64;
+    const binary = atob(padded);
+    const sigBytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      sigBytes[i] = binary.charCodeAt(i);
+    }
+
+    const dataBytes = encoder.encode(`${headerB64}.${payloadB64}`);
+    const isValid = await crypto.subtle.verify('HMAC', key, sigBytes, dataBytes);
+    if (!isValid) return null;
+
+    const payloadJson = atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/'));
+    const payload = JSON.parse(payloadJson);
+
+    if (payload.exp && payload.exp * 1000 < Date.now()) {
+      return null;
+    }
+
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public paths that do not require auth header
@@ -33,26 +76,24 @@ export function middleware(request: NextRequest) {
     );
   }
 
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      throw new Error('Malformed token');
-    }
-
-    const payloadJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
-    const payload = JSON.parse(payloadJson);
-
-    // Check token expiration
-    if (payload.exp && payload.exp * 1000 < Date.now()) {
-      return NextResponse.json({ error: 'Unauthorized: Session token expired' }, { status: 401 });
-    }
-
-    const response = NextResponse.next();
-    response.headers.set('x-user-data', JSON.stringify(payload));
-    return response;
-  } catch (err) {
-    return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+  const payload = await verifyToken(token);
+  if (!payload) {
+    return NextResponse.json(
+      { error: 'Unauthorized: Invalid token signature or expired session' },
+      { status: 401 }
+    );
   }
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-user-data', JSON.stringify(payload));
+  requestHeaders.set('x-user-id', payload.id || '');
+  requestHeaders.set('x-user-role', payload.role || '');
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
